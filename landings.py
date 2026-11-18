@@ -17,7 +17,7 @@ STEPS = """
 </div></div></section>
 """
 
-# ------------------------------------------------------------ 3 · Stromausfall
+# ------------------------------------------------------------ 3 · Stromausfall (Scrollytelling)
 WAVE = "M0 90C170 0 330 170 520 86S850 0 1000 80"
 
 
@@ -25,50 +25,73 @@ def v3(KREISE, VIZ, CALL, TEL, I):
     cards = ""
     for n, (key, name, head, text, pts, link) in enumerate(KREISE):
         cards += ('<button class="svc" type="button" data-i="%d"><span class="viz">%s</span><b>%s</b>'
-                  '<span class="svc-t">%s</span><span class="svc-go">Aufmachen →</span></button>' % (n, VIZ[key], name, head))
+                  '<span class="svc-t">%s</span><span class="svc-go">Aufmachen <i>+</i></span></button>' % (n, VIZ[key], name, head))
     return """
-<div class="s-dark" id="dark">
-<picture><source media="(max-width:700px)" srcset="../assets/img/kasten-m.jpg"><img class="dk-img" id="dk-img" src="../assets/img/kasten.jpg" alt="Offener Sicherungskasten an einer dunklen Wand"></picture>
-<div class="dk-txt"><h1>Strom weg?</h1><p>Leuchte mit Finger oder Maus. Finde den Hauptschalter und leg ihn um.</p></div>
-<div class="dk-shade" id="shade"></div>
-<button class="dk-hot" id="hot" type="button" aria-label="Hauptschalter umlegen"><i></i><span>Hauptschalter</span></button>
-<button class="dk-skip" id="blk-skip" type="button">Licht einfach anmachen</button>
-</div>
+<div class="shade" id="shade" aria-hidden="true"></div>
 <div class="s-flip" id="flip" aria-hidden="true"><picture><source media="(max-width:700px)" srcset="../assets/img/hand-m.jpg"><img src="../assets/img/hand.jpg" alt=""></picture></div>
 <div class="flash" id="flash"></div>
 <svg class="wave" id="wave" viewBox="0 0 1000 1500" preserveAspectRatio="none" aria-hidden="true"><path class="wv-fill" d="%(wave)sV1500H0Z"/><path class="wv-edge" d="%(wave)s"/></svg>
 
-<section class="v3-hero" style="padding:0"><div class="wrap hero-grid">
+<section class="st" id="s1" style="padding:0"><div class="pin">
+<div class="k-wrap" id="k-wrap"><picture><source media="(max-width:700px)" srcset="../assets/img/kasten-m.jpg"><img class="k-img" src="../assets/img/kasten.jpg" alt="Offener Sicherungskasten an einer dunklen Wand"></picture></div>
+<div class="k-vig"></div>
+<div class="beats">
+<div class="beat" data-a="-1" data-b=".2"><h1>Strom weg?</h1><p class="only-out">Scroll weiter. Finger oder Maus sind deine Taschenlampe.</p></div>
+<div class="beat" data-a=".26" data-b=".46"><p class="big">Kein Licht.<br>Kein Herd.<br>Kein WLAN.</p></div>
+<div class="beat" data-a=".52" data-b=".72"><p class="big">Irgendwo im Keller<br>sitzt der Grund.</p></div>
+<div class="beat low" data-a=".78" data-b="2"><p class="big only-out">Leg den Hauptschalter um.</p><p class="big only-on">Strom läuft.<br><em>Wir bringen ihn zurück.</em></p></div>
+</div>
+<button class="dk-hot" id="hot" type="button" aria-label="Hauptschalter umlegen"><i></i></button>
+<p class="hint-scroll">scrollen</p>
+</div></section>
+
+<section class="v3-hero"><div class="wrap hero-grid">
 <div><p class="eyebrow">Meisterbetrieb und Notdienst · Dortmund</p>
-<h1 class="split">Strom weg? Wir bringen ihn zurück.</h1></div>
+<h2 class="split">Elektrik, die läuft. Und jemand, der kommt, wenn nicht.</h2></div>
 <div class="hero-side"><p class="lead">Notdienst Tag und Nacht. Und damit es gar nicht erst dunkel wird: Wallbox, Solaranlage, Smart Home, E-Check und Sanierung vom Meisterbetrieb.</p>
 <div class="btn-row"><a class="btn" %(call)s>%(phone)s Notdienst %(tel)s</a><a class="btn btn--ghost" href="foto-check.html">%(cam)s 3 Fotos schicken</a></div></div>
 </div>
-<div class="hero-navy"><svg class="hn-wave" viewBox="0 0 1000 170" preserveAspectRatio="none" aria-hidden="true"><path class="wv-fill" d="%(wave)sV170H0Z"/><path class="wv-edge" d="%(wave)s"/></svg>
-<div class="wrap"><p class="hn-lab">Zahlen aus unserem Betrieb</p><div class="hn-facts">
+<div class="wrap"><div class="hn-facts">
 <div><b data-count="8">8</b><span>Leute im Team</span></div><div><b data-count="2009" data-plain>2009</b><span>gegründet</span></div>
 <div><b data-count="24">24</b><span>Stunden Notdienst</span></div><div><b data-count="1">1</b><span>Werktag bis zum Rückruf</span></div>
-</div></div></div></section>
+</div></div></section>
 
-<section class="cable" id="cable" style="padding:0">
-<div class="cb-photo" id="arc"><picture><source media="(max-width:700px)" srcset="../assets/img/kabel-m.jpg"><img id="cb-img" src="../assets/img/kabel.jpg" alt="Durchtrenntes Kupferkabel, zwischen den Enden springt ein Lichtbogen" loading="lazy"></picture><canvas></canvas>
-<div class="cb-head"><p class="eyebrow">Unser Name</p><h2>Kabel durch.<br>Der Strom springt trotzdem.</h2></div>
-<p class="arc-cap">Beweg Maus oder Finger. Der Lichtbogen folgt dir.</p></div>
-<div class="wrap"><div class="svc-grid" id="svc">%(cards)s</div></div>
-</section>
+<section class="st" id="s3" style="padding:0"><div class="pin cb" id="arc">
+<div class="half hl"><picture><source media="(max-width:700px)" srcset="../assets/img/kabel-m.jpg"><img src="../assets/img/kabel.jpg" alt="Durchtrenntes Kupferkabel" loading="lazy"></picture></div>
+<div class="half hr"><picture><source media="(max-width:700px)" srcset="../assets/img/kabel-m.jpg"><img src="../assets/img/kabel.jpg" alt="" loading="lazy"></picture></div>
+<canvas></canvas>
+<div class="beats dark-ink">
+<div class="beat top" data-a="-1" data-b=".3"><p class="eyebrow">Unser Name</p><p class="big">Kabel durch.</p></div>
+<div class="beat top" data-a=".36" data-b=".62"><p class="big">Der Strom springt<br>trotzdem.</p></div>
+<div class="beat top" data-a=".68" data-b="2"><p class="big">Das ist ein Lichtbogen.</p><p class="mid">In deiner Wand will ihn niemand haben. Dafür gibt es uns.</p></div>
+</div>
+<p class="arc-cap">Beweg Maus oder Finger. Der Lichtbogen folgt dir.</p>
+</div></section>
 
-<section class="v3-phone"><div class="ph" id="ph"><img src="../assets/img/handy.jpg" alt="Hand hält ein Smartphone mit der LICHTBOGEN Seite" loading="lazy">
-<div class="ph-screen" id="ph-screen" aria-hidden="true"><div class="ph-ui"><b>LICHTBOGEN</b><span>Strom weg?</span><i></i><em>Notdienst anrufen</em></div></div></div>
-<div class="wrap ph-grid">
-<div><p class="eyebrow">Foto-Check</p><h2>Der kürzeste Weg zum Elektriker: <em>drei Fotos.</em></h2>
-<p class="lead">Zählerschrank fotografieren, abschicken, Rückruf bekommen. Die Bilder landen direkt als Akte in der Werkakte-App.</p>
-<p style="margin-top:26px"><a class="btn pill" href="foto-check.html">Jetzt Fotos schicken →</a></p></div><div></div>
+<section class="svc-sec" id="leistungen"><div class="wrap">
+<div class="sec-head"><p class="eyebrow">Leistungen</p><h2>Sechs Dinge, die wir unter Strom setzen.</h2><p class="lead">Tipp eine Karte an. Sie geht auf, und wieder zu.</p></div>
+<div class="svc-grid" id="svc">%(cards)s</div></div></section>
+
+<section class="st" id="s5" style="padding:0"><div class="pin phs">
+<div class="ph" id="ph"><img src="../assets/img/handy.jpg" alt="Hand hält ein Smartphone" loading="lazy">
+<div class="ph-screen" id="ph-screen" aria-hidden="true">
+<div class="scr on"><b>LICHTBOGEN</b><span>Foto-Check</span><em>3 Fotos, 2 Minuten</em></div>
+<div class="scr"><img src="../assets/img/kasten-m.jpg" alt=""><span class="sm">Foto 1 · Zählerschrank</span><u></u></div>
+<div class="scr"><div class="thumbs"><img src="../assets/img/kasten-m.jpg" alt=""><img src="../assets/img/kabel-m.jpg" alt=""><img src="../assets/img/hand-m.jpg" alt=""></div><span class="sm">3 von 3 Fotos</span><em>Abschicken</em></div>
+<div class="scr"><i class="okc">✓</i><span>Akte angelegt</span><span class="sm">Rückruf noch heute</span></div>
+</div></div>
+<div class="wrap ph-txt"><div class="beats rel">
+<div class="beat" data-a="-1" data-b=".22"><p class="eyebrow">Foto-Check</p><p class="big">Der kürzeste Weg zum Elektriker: <em>drei Fotos.</em></p></div>
+<div class="beat" data-a=".28" data-b=".47"><p class="big">Zählerschrank fotografieren.</p></div>
+<div class="beat" data-a=".53" data-b=".72"><p class="big">Problemstelle und Raum dazu. Abschicken.</p></div>
+<div class="beat" data-a=".78" data-b="2"><p class="big">Fertig. Der Meister ruft <em>vorbereitet</em> zurück.</p><p style="margin-top:22px;pointer-events:auto"><a class="btn pill" href="foto-check.html">Jetzt ausprobieren →</a></p></div>
+</div></div>
 </div></section>
 %(steps)s
 <section class="v3-cta"><div class="wrap">
 <p class="eyebrow">Notdienst</p><h2>Dunkel bei dir?<br>Ein Anruf.</h2>
 <p><a class="btn pulse" %(call)s>%(phone)s %(tel)s</a></p>
-<p><button class="textbtn" type="button" id="replay">Stromausfall noch einmal erleben</button></p>
+<p><button class="textbtn" type="button" id="replay">Stromausfall noch einmal von vorn</button></p>
 </div></section>
 
 <div class="sheet" id="sheet" role="dialog" aria-modal="true" aria-labelledby="sh-h" hidden><div class="sheet-in">

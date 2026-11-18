@@ -27,6 +27,8 @@ VARIANTS = {
     "stromausfall": dict(n=3, name="Stromausfall", theme="light", css="v3.css", js=["fx.js", "v3.js"]),
 }
 PAGES = []
+import time as _t
+VER = str(int(_t.time()))
 
 
 def page(file, title, desc, body, scripts=""):
@@ -42,9 +44,11 @@ def emit(vdir, file, title, desc, body, scripts="", landing=False):
     forced = "'%s'" % v["theme"] if v["theme"] else "null"
     head_extra = ""
     if vdir == "stromausfall" and landing:
-        head_extra = "<script>try{if(!sessionStorage.getItem('lb3-power')){var d=document.documentElement;d.setAttribute('data-theme','dark');d.classList.add('out')}}catch(e){}</script>"
+        head_extra = "<script>try{if(location.search.indexOf('licht=an')>-1)sessionStorage.setItem('lb3-power','1');if(!sessionStorage.getItem('lb3-power')){var d=document.documentElement;d.setAttribute('data-theme','dark');d.classList.add('out')}}catch(e){}</script>"
     light = ('<button class="tool" type="button" data-light aria-pressed="true" aria-label="Licht ausschalten">%s</button>' % I["bulb"]) if not v["theme"] else ""
-    js = "".join('\n<script src="../assets/js/%s" defer></script>' % j for j in v["js"] if landing or j == "fx.js")
+    if vdir == "stromausfall" and landing:
+        light = '<button class="lsw" id="lsw" type="button" role="switch" aria-checked="false" aria-label="Licht an oder aus"><span>Licht</span><i></i></button>'
+    js = "".join('\n<script src="../assets/js/%s?v=%s" defer></script>' % (j, VER) for j in v["js"] if landing or j == "fx.js")
     html = """<!doctype html>
 <html lang="de" data-theme="light" data-v="%(n)s">
 <head>
@@ -57,8 +61,8 @@ def emit(vdir, file, title, desc, body, scripts="", landing=False):
 <link rel="icon" href="data:image/svg+xml,%%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%%3E%%3Crect width='32' height='32' rx='7' fill='%%23080a0f'/%%3E%%3Cpath d='M6 23a10 10 0 0 1 20 0' fill='none' stroke='%%23ffc83d' stroke-width='3' stroke-linecap='round'/%%3E%%3Ccircle cx='16' cy='23' r='2.500' fill='%%23ffc83d'/%%3E%%3C/svg%%3E">
 <script>(function(){var F=%(forced)s,t=F;if(!t){try{t=localStorage.getItem('lb-theme')}catch(e){}}if(!t)t=matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light';document.documentElement.setAttribute('data-theme',t)})()</script>%(head_extra)s
 <link rel="preload" href="../assets/fonts/grotesk.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="stylesheet" href="../assets/css/style.css">
-<link rel="stylesheet" href="../assets/css/%(css)s">
+<link rel="stylesheet" href="../assets/css/style.css?v=%(ver)s">
+<link rel="stylesheet" href="../assets/css/%(css)s?v=%(ver)s">
 </head>
 <body>
 <div class="demo"><div class="wrap"><span class="for">So könnte das für <span data-firma></span> aussehen.</span>
@@ -86,11 +90,11 @@ def emit(vdir, file, title, desc, body, scripts="", landing=False):
 <p style="margin-top:10px">Weitere Demos: <a href="https://projektex.de/referenzen/warmherz/" rel="noopener">WARMHERZ</a> · <a href="https://projektex.de/referenzen/werkakte-app/" rel="noopener">Werkakte-App</a></p></div>
 </div></footer>
 <div class="bar"><a class="btn" %(call)s>%(phone)s Anrufen</a><a class="btn btn--ghost" href="foto-check.html">%(cam)s Foto-Check</a></div>
-<script src="../assets/js/app.js" defer></script>%(js)s%(scripts)s
+<script src="../assets/js/app.js?v=%(ver)s" defer></script>%(js)s%(scripts)s
 </body>
 </html>
 """ % dict(title=title, desc=desc, body=body, nav=nav, scripts=scripts.replace('src="assets/', 'src="../assets/'), call=CALL, tel=TEL,
-           n=v["n"], forced=forced, head_extra=head_extra, css=v["css"], js=js, light=light,
+           n=v["n"], ver=VER, forced=forced, head_extra=head_extra, css=v["css"], js=js, light=light,
            logo=I["logo"], sound=I["sound"], bulb=I["bulb"], phone=I["phone"], cam=I["cam"])
     (OUT / vdir).mkdir(exist_ok=True)
     (OUT / vdir / file).write_text(html, encoding="utf-8")
