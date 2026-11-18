@@ -306,3 +306,128 @@ html.out.film .shade{display:none}
 .soc-b:hover{transform:translateY(-3px);border-color:var(--accent);background:rgba(255,179,71,.12)}
 @media (min-width:720px){.rev-sum{grid-template-columns:1fr 1fr}.ig-grid{grid-template-columns:repeat(6,1fr);gap:10px}.ig-t{border-radius:14px}}
 @media (prefers-reduced-motion:reduce){.rev-track{animation:none}.rev-row{overflow-x:auto}}
+
+/* Notdienst als Motion Design: sechs Bilder laufen von selbst ab */
+.nd{padding:90px 0 110px;background:radial-gradient(ellipse 70% 60% at 80% 40%,rgba(60,110,255,.16),rgba(60,110,255,0) 70%),var(--bg);overflow:hidden}
+.nd-in{display:grid;gap:34px;align-items:center}
+.nd-txt h2{font-size:clamp(2.6rem,9vw,5rem);line-height:.98;margin:12px 0 18px}
+.nd-txt h2 em{font-style:normal;color:var(--accent)}
+.nd-lead{color:var(--muted);max-width:44ch;margin-bottom:24px;font-size:1.05rem}
+.nd-chips{list-style:none;display:flex;flex-wrap:wrap;gap:8px;margin:26px 0 0;padding:0}
+.nd-chips li{padding:8px 14px;border-radius:99px;border:1px solid rgba(255,255,255,.14);font-size:.86rem;color:#d5dae6}
+.nd-stage{position:relative;aspect-ratio:16/10;border-radius:28px;overflow:hidden;background:radial-gradient(ellipse at 50% 35%,#16306c,#0a1430 62%,#070c1d);border:1px solid rgba(120,160,255,.22);box-shadow:0 30px 80px rgba(0,0,0,.6),0 0 90px rgba(60,110,255,.16);container-type:inline-size;isolation:isolate}
+.nd-stage::after{content:"";position:absolute;inset:0;background:repeating-linear-gradient(0deg,rgba(255,255,255,.025) 0 1px,transparent 1px 3px);pointer-events:none;z-index:5}
+.nd-sc{position:absolute;inset:0;display:grid;place-items:center;opacity:0;visibility:hidden;transition:opacity .35s,visibility 0s .35s}
+.nd-stage[data-s="0"] .sc0,.nd-stage[data-s="1"] .sc1,.nd-stage[data-s="2"] .sc2,.nd-stage[data-s="3"] .sc3,.nd-stage[data-s="4"] .sc4,.nd-stage[data-s="5"] .sc5{opacity:1;visibility:visible;transition:opacity .35s}
+.nd-stage.hold *{animation-play-state:paused!important}
+.nd-cap{position:absolute;left:0;right:0;bottom:11%;text-align:center;font:700 5.2cqw/1 var(--head);color:#fff;letter-spacing:-.02em;margin:0}
+.nd-word{position:absolute;margin:0;font:900 13cqw/1 var(--head);letter-spacing:-.04em;color:#fff;text-shadow:0 0 40px rgba(120,170,255,.5)}
+/* Formen */
+.h-roof-l{fill:#16264f}.h-roof-r{fill:#0d1936}.h-chim{fill:#16264f}.h-wall-l{fill:#34549c}.h-wall-r{fill:#223a72}.h-floor{fill:#060b1c;opacity:.55}.h-door{fill:#0f1c3d}
+.nd-house .w{fill:#0c1530;transition:fill .25s}
+.v-body,.v-cab{fill:#f4f7ff}.v-glass{fill:#24407c}.v-stripe{fill:#ffb347}.v-bolt{fill:#0a1430}.v-wheel{fill:#0a1128}.v-hub{fill:#9fb3e0}.v-light{fill:#ffe9a8}
+.p-body{fill:#3f63b8}.p-screen{fill:#0a1430}.p-notch{fill:#3f63b8}.p-icon{fill:#ffb347}.p-wave{fill:none;stroke:#ffb347;stroke-width:5;stroke-linecap:round}
+.m-head{fill:#f3c9a2}.m-cap{fill:#2f6fe0}.m-body{fill:#ffb347}.m-leg{fill:#2f6fe0}.m-arm{fill:#ffb347}.m-case{fill:#24407c}
+/* Bild 1: Uhr, Haus wird dunkel */
+.nd-clock{position:absolute;top:9%;left:0;right:0;text-align:center;font:900 24cqw/1 var(--head);font-variant-numeric:tabular-nums;letter-spacing:-.04em;color:#fff;text-shadow:0 0 50px rgba(140,180,255,.55)}
+.nd-clock b{font-weight:900}.nd-clock i{font-style:normal;margin:0 .04em}
+.sc0 .nd-house{position:absolute;width:34cqw;bottom:16%;left:33cqw}
+.nd-dot{position:absolute;left:62cqw;bottom:47%;width:3.4cqw;height:3.4cqw;border-radius:50%;background:#ff3b30;box-shadow:0 0 4cqw 1cqw rgba(255,59,48,.7);opacity:0}
+[data-s="0"] .nd-clock{animation:ndpop .5s cubic-bezier(.2,1.5,.4,1) both}
+[data-s="0"] .nd-clock i{animation:ndblink 1s steps(2) infinite}
+[data-s="0"] .sc0 .nd-house{animation:ndrise .6s .1s cubic-bezier(.2,.9,.3,1) both}
+[data-s="0"] .sc0 .w{animation:ndwinout 1.5s .3s both}
+[data-s="0"] .sc0 .w2,[data-s="0"] .sc0 .w5{animation-delay:.42s}[data-s="0"] .sc0 .w3,[data-s="0"] .sc0 .w7{animation-delay:.36s}
+[data-s="0"] .nd-dot{animation:nddot .7s 1.3s infinite alternate both}
+[data-s="0"] .sc0 .nd-cap{animation:ndup .4s 1.25s both}
+@keyframes ndwinout{0%,45%{fill:#ffc35a}52%{fill:#0c1530}58%{fill:#ffc35a}66%,100%{fill:#0c1530}}
+@keyframes nddot{from{opacity:.25;scale:.8}to{opacity:1;scale:1.15}}
+@keyframes ndblink{50%{opacity:.15}}
+@keyframes ndpop{from{opacity:0;scale:.6}to{opacity:1;scale:1}}
+@keyframes ndrise{from{opacity:0;translate:0 30%}to{opacity:1;translate:0 0}}
+@keyframes ndup{from{opacity:0;translate:0 60%}to{opacity:1;translate:0 0}}
+/* Bild 2: Handy klingelt */
+.nd-ring{position:absolute;left:11cqw;top:50%;width:30cqw;height:30cqw;margin-top:-15cqw;display:grid;place-items:center}
+.nd-ring i{position:absolute;inset:0;border-radius:50%;border:.8cqw solid #ffb347;opacity:0}
+.nd-phone{width:17cqw;position:relative;filter:drop-shadow(0 2cqw 3cqw rgba(0,0,0,.5))}
+.sc1 .nd-word{left:47cqw;top:50%;translate:0 -50%}
+[data-s="1"] .nd-ring i{animation:ndring 1.3s ease-out infinite}
+[data-s="1"] .nd-ring i:nth-child(2){animation-delay:.33s}[data-s="1"] .nd-ring i:nth-child(3){animation-delay:.66s}
+[data-s="1"] .nd-phone{animation:ndshake .5s ease-in-out infinite}
+[data-s="1"] .p-wave{animation:ndblink .5s steps(2) infinite}
+[data-s="1"] .sc1 .nd-word{animation:ndslam .5s .15s cubic-bezier(.2,1.4,.4,1) both}
+@keyframes ndring{0%{scale:.5;opacity:.9}100%{scale:1.55;opacity:0}}
+@keyframes ndshake{0%,100%{rotate:-11deg}50%{rotate:-3deg;translate:.6cqw 0}}
+@keyframes ndslam{from{opacity:0;scale:1.8;filter:blur(8px)}to{opacity:1;scale:1;filter:blur(0)}}
+/* Bild 3: Wagen fährt die Route */
+.nd-map{position:absolute;inset:0;width:100%;height:100%}
+.nd-road{fill:none;stroke:#0d1836;stroke-width:26;stroke-linecap:round;stroke-linejoin:round}
+.nd-route{fill:none;stroke:#ffb347;stroke-width:8;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:100;stroke-dashoffset:100;filter:drop-shadow(0 0 8px rgba(255,179,71,.9))}
+.nd-car{offset-path:path("M150 150 L330 255 L470 175 L650 280");offset-distance:0%;offset-rotate:auto}
+[data-s="2"] .nd-route{animation:nddraw 1.9s .15s cubic-bezier(.5,0,.4,1) both}
+[data-s="2"] .nd-car{animation:ndgo 1.9s .15s cubic-bezier(.5,0,.4,1) both}
+[data-s="2"] .nd-pin.a{animation:ndpin .5s both}[data-s="2"] .nd-pin.b{animation:ndpin .5s .2s both}
+[data-s="2"] .sc2 .nd-cap{animation:ndup .4s .5s both}
+.nd-pin{transform-box:fill-box;transform-origin:50% 100%}
+@keyframes nddraw{to{stroke-dashoffset:0}}
+@keyframes ndgo{to{offset-distance:100%}}
+@keyframes ndpin{from{opacity:0;scale:.3}to{opacity:1;scale:1}}
+/* Bild 4: Ring füllt sich, Uhr läuft */
+.nd-count{position:absolute;width:44cqw;top:7%;left:28cqw;rotate:-90deg}
+.c-bg{fill:none;stroke:rgba(255,179,71,.16);stroke-width:12}
+.c-fg{fill:none;stroke:#ffb347;stroke-width:12;stroke-linecap:round;stroke-dasharray:100;stroke-dashoffset:100;filter:drop-shadow(0 0 10px rgba(255,179,71,.8))}
+.nd-count-t{position:absolute;top:7%;left:28cqw;width:44cqw;height:44cqw;display:grid;align-content:center;justify-items:center;gap:.8cqw}
+.nd-count-t b{font:900 11cqw/1 var(--head);font-variant-numeric:tabular-nums;letter-spacing:-.04em;color:#fff}
+.nd-count-t span{font:700 2.3cqw/1 var(--head);letter-spacing:.14em;text-transform:uppercase;color:#ffcf6b}
+.nd-drive{position:absolute;bottom:9%;left:0;right:0;height:13cqw}
+.nd-drive .nd-van{position:absolute;width:22cqw;left:39cqw;bottom:0}
+.nd-drive i{position:absolute;left:8cqw;height:.7cqw;border-radius:9px;background:linear-gradient(90deg,transparent,rgba(190,215,255,.9));width:22cqw;bottom:3cqw;opacity:0}
+.nd-drive i:nth-of-type(2){bottom:6cqw;left:14cqw;width:18cqw}.nd-drive i:nth-of-type(3){bottom:9cqw;left:10cqw;width:14cqw}
+[data-s="3"] .c-fg{animation:nddraw 2.1s linear both}
+[data-s="3"] .nd-count-t{animation:ndpop .45s cubic-bezier(.2,1.5,.4,1) both}
+[data-s="3"] .nd-drive .nd-van{animation:ndbob .28s ease-in-out infinite alternate}
+[data-s="3"] .nd-drive i{animation:ndspeed .45s linear infinite}
+[data-s="3"] .nd-drive i:nth-of-type(2){animation-delay:.15s}[data-s="3"] .nd-drive i:nth-of-type(3){animation-delay:.3s}
+@keyframes ndbob{to{translate:0 -.5cqw}}
+@keyframes ndspeed{0%{opacity:0;translate:14cqw 0}30%{opacity:1}100%{opacity:0;translate:-12cqw 0}}
+/* Bild 5: Ankunft */
+.sc4 .nd-house{position:absolute;width:42cqw;right:5cqw;bottom:17%}
+.nd-arr{position:absolute;left:0;bottom:17%;width:30cqw}
+.nd-arr .nd-van{width:100%}
+.nd-man{position:absolute;width:8cqw;bottom:17%;left:36cqw;opacity:0}
+.nd-bolt{position:absolute;left:44cqw;top:24%;width:11cqw;height:11cqw;border-radius:50%;background:#0a1430;border:.5cqw solid #ffb347;display:grid;place-items:center;opacity:0;box-shadow:0 0 4cqw rgba(255,179,71,.5)}
+.nd-bolt svg{width:55%;fill:#ffb347}
+[data-s="4"] .nd-arr{animation:ndin 1s cubic-bezier(.1,.8,.2,1) both}
+[data-s="4"] .nd-man{animation:ndwalk 1.3s .75s cubic-bezier(.4,0,.2,1) both}
+[data-s="4"] .m-leg1{animation:ndleg .26s .75s ease-in-out 5 alternate;transform-box:fill-box;transform-origin:50% 0}
+[data-s="4"] .m-leg2{animation:ndleg .26s .88s ease-in-out 5 alternate;transform-box:fill-box;transform-origin:50% 0}
+[data-s="4"] .nd-bolt{animation:ndpop .45s 1.5s cubic-bezier(.2,1.6,.4,1) both}
+[data-s="4"] .sc4 .nd-cap{animation:ndslam .4s 1.6s both}
+@keyframes ndin{from{translate:-120% 0}to{translate:4cqw 0}}
+@keyframes ndwalk{0%{opacity:0;translate:0 0}12%{opacity:1}100%{opacity:1;translate:21cqw -3.5cqw}}
+@keyframes ndleg{to{rotate:22deg}}
+/* Bild 6: Licht an */
+.sc5 .nd-house{position:absolute;width:40cqw;left:8cqw;top:9%}
+.nd-rays{position:absolute;left:28cqw;top:30%;width:0;height:0;box-shadow:0 0 22cqw 16cqw rgba(255,190,90,.0)}
+.nd-check{position:absolute;right:9cqw;top:14%;width:27cqw;fill:none;stroke:#3ddc6a;stroke-width:13;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:140;stroke-dashoffset:140;filter:drop-shadow(0 0 2cqw rgba(61,220,106,.7))}
+.sc5 .nd-word{left:0;right:0;bottom:8%;text-align:center}
+[data-s="5"] .sc5 .w{animation:ndwinon .3s both}
+[data-s="5"] .sc5 .w2{animation-delay:.12s}[data-s="5"] .sc5 .w3{animation-delay:.24s}[data-s="5"] .sc5 .w4{animation-delay:.36s}[data-s="5"] .sc5 .w5{animation-delay:.48s}[data-s="5"] .sc5 .w6{animation-delay:.6s}[data-s="5"] .sc5 .w7{animation-delay:.72s}
+[data-s="5"] .nd-rays{animation:ndrays 1s .5s both}
+[data-s="5"] .nd-check{animation:ndcheck .5s .85s cubic-bezier(.4,0,.2,1) both}
+[data-s="5"] .sc5 .nd-word{animation:ndslam .5s 1.05s cubic-bezier(.2,1.4,.4,1) both}
+@keyframes ndwinon{from{fill:#0c1530}to{fill:#ffc35a}}
+@keyframes ndrays{to{box-shadow:0 0 22cqw 16cqw rgba(255,190,90,.3)}}
+@keyframes ndcheck{to{stroke-dashoffset:0}}
+/* Fortschritt und Pause */
+.nd-bar{position:absolute;left:5%;right:5%;bottom:3.4%;display:flex;gap:1.2cqw;z-index:6}
+.nd-bar i{flex:1;height:.7cqw;min-height:3px;border-radius:9px;background:rgba(255,255,255,.18);overflow:hidden;position:relative}
+.nd-bar i::after{content:"";position:absolute;inset:0;background:#ffb347;transform:scaleX(0);transform-origin:0 50%}
+.nd-bar i.done::after{transform:scaleX(1)}
+.nd-bar i.run::after{animation:ndfill var(--d,2.2s) linear both}
+@keyframes ndfill{to{transform:scaleX(1)}}
+.nd-re{position:absolute;right:3%;top:5%;width:44px;height:44px;border-radius:50%;border:1px solid rgba(255,255,255,.25);background:rgba(7,12,29,.6);cursor:pointer;z-index:7;display:grid;place-items:center;padding:0}
+.nd-re span{width:12px;height:14px;border-left:4px solid #fff;border-right:4px solid #fff;box-sizing:border-box}
+.nd-stage.hold .nd-re span{width:0;height:0;border:8px solid transparent;border-left:13px solid #fff;border-right:0;margin-left:4px}
+@media (min-width:860px){.nd-in{grid-template-columns:.85fr 1.15fr;gap:54px}}
+@media (prefers-reduced-motion:reduce){.nd-stage *{animation:none!important}.nd-check{stroke-dashoffset:0}.sc5 .w{fill:#ffc35a}}

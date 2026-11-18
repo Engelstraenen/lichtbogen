@@ -56,6 +56,97 @@ def v3(KREISE, VIZ, CALL, TEL, I):
 <div><b data-count="24">24</b><span>Stunden Notdienst</span></div><div><b data-count="1">1</b><span>Werktag bis zum Rückruf</span></div>
 </div></div></section>
 
+<section class="nd" id="notdienst"><div class="wrap nd-in">
+<div class="nd-txt">
+<p class="eyebrow">Notdienst · Tag und Nacht</p>
+<h2>Strom weg?<br><em>Wir fahren los.</em></h2>
+<p class="nd-lead">Ein Anruf genügt. Du sprichst mit einem Elektriker, nicht mit einer Warteschleife. Und dann kommt jemand.</p>
+<p><a class="btn pulse" %(call)s>%(phone)s Notdienst %(tel)s</a></p>
+<ul class="nd-chips"><li>Stromausfall</li><li>Sicherung fliegt raus</li><li>Schmorgeruch</li><li>Wasserschaden an der Elektrik</li></ul>
+</div>
+<div class="nd-stage" id="nd-stage" data-s="0" role="img" aria-label="Animation: Um 22 Uhr 47 fällt der Strom aus, ein Anruf, der Wagen fährt los, der Elektriker kommt an, das Licht geht wieder an.">
+<div class="nd-sc sc0"><div class="nd-clock"><b>22</b><i>:</i><b>47</b></div><svg class="nd-house" viewBox="0 0 240 230" aria-hidden="true">
+<polygon class="h-floor" points="30,175 120,215 212,170 122,132"/>
+<polygon class="h-wall-r" points="120,152 212,106 212,170 120,215"/>
+<polygon class="h-wall-l" points="30,112 75,66 120,152 120,215 30,175"/>
+<polygon class="h-roof-r" points="71,60 163,14 218,104 124,152"/>
+<polygon class="h-roof-l" points="71,60 75,66 30,112 24,112"/>
+<polygon class="h-chim" points="150,30 164,23 164,44 150,51"/>
+<g class="h-wins">
+<polygon class="w w1" points="42,124 64,133.8 64,151.8 42,142"/><polygon class="w w2" points="84,143 106,152.8 106,170.8 84,161"/><polygon class="w w3" points="42,150 64,159.8 64,177.8 42,168"/><polygon class="w w4" points="84,169 106,178.8 106,194.8 84,185"/>
+<polygon class="w w5" points="126,160 148,149 148,167 126,178"/><polygon class="w w6" points="178,134 200,123 200,141 178,152"/><polygon class="w w7" points="178,162 200,151 200,169 178,180"/>
+</g>
+<polygon class="h-door" points="150,163 166,155 166,192 150,200"/>
+</svg><span class="nd-dot"></span><p class="nd-cap">Licht aus.</p></div>
+<div class="nd-sc sc1"><div class="nd-ring"><i></i><i></i><i></i><svg class="nd-phone" viewBox="0 0 120 200" aria-hidden="true">
+<rect class="p-body" x="8" y="6" width="104" height="188" rx="22"/><rect class="p-screen" x="16" y="14" width="88" height="172" rx="15"/>
+<rect class="p-notch" x="44" y="18" width="32" height="8" rx="4"/>
+<path class="p-icon" d="M47 83c-2 9 2 21 11 30s21 13 30 11l2-11-11-5-5 5c-5-2-10-7-12-12l5-5-5-11z"/>
+<path class="p-wave" d="M66 78c7 1 13 7 14 14"/><path class="p-wave p-wave2" d="M66 67c13 1 24 12 25 25"/>
+</svg></div><p class="nd-word">ANRUF</p></div>
+<div class="nd-sc sc2"><svg class="nd-map" viewBox="0 0 800 450" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+<defs><pattern id="ndb" width="92" height="54" patternUnits="userSpaceOnUse" patternTransform="translate(10 6)"><polygon points="46,4 86,27 46,50 6,27" fill="#16264d"/><polygon points="46,10 76,27 46,44 16,27" fill="#1b2f5e"/></pattern></defs>
+<rect width="800" height="450" fill="url(#ndb)"/>
+<path class="nd-road" d="M150 150 L330 255 L470 175 L650 280"/><path class="nd-route" id="nd-route" pathLength="100" d="M150 150 L330 255 L470 175 L650 280"/>
+<g class="nd-pin a"><polygon points="150,110 196,136 150,162 104,136" fill="#24407c"/><polygon points="104,136 150,162 150,186 104,160" fill="#1a2e5c"/><polygon points="150,162 196,136 196,160 150,186" fill="#ffb347"/></g>
+<g class="nd-pin b"><polygon points="650,236 696,262 650,288 604,262" fill="#24407c"/><polygon points="604,262 650,288 650,314 604,288" fill="#1a2e5c"/><polygon points="650,288 696,262 696,288 650,314" fill="#101c3a"/><circle cx="650" cy="226" r="9" fill="#ff3b30"/></g>
+<g class="nd-car"><ellipse cx="0" cy="6" rx="26" ry="9" fill="rgba(255,190,90,.35)"/><rect x="-17" y="-11" width="34" height="18" rx="6" fill="#fff"/><rect x="2" y="-8" width="11" height="12" rx="3" fill="#24407c"/></g>
+</svg><p class="nd-cap">Wir sind unterwegs.</p></div>
+<div class="nd-sc sc3"><svg class="nd-count" viewBox="0 0 200 200" aria-hidden="true"><circle class="c-bg" cx="100" cy="100" r="82"/><circle class="c-fg" cx="100" cy="100" r="82" pathLength="100"/></svg>
+<div class="nd-count-t"><b id="nd-time">22:49</b><span>auf dem Weg zu dir</span></div><div class="nd-drive"><svg class="nd-van" viewBox="0 0 150 80" aria-hidden="true">
+<path class="v-body" d="M8 18h78a8 8 0 0 1 8 8v34H8a6 6 0 0 1-6-6V24a6 6 0 0 1 6-6z"/>
+<path class="v-cab" d="M94 28h22c5 0 9 2 12 6l12 15c2 2 3 5 3 8v3H94z"/>
+<path class="v-glass" d="M100 33h15c3 0 6 1 8 4l8 11h-31z"/>
+<rect class="v-stripe" x="8" y="38" width="80" height="9" rx="2"/>
+<path class="v-bolt" d="M44 24l-9 13h7l-3 11 11-15h-7z"/>
+<circle class="v-wheel" cx="34" cy="62" r="11"/><circle class="v-hub" cx="34" cy="62" r="4"/>
+<circle class="v-wheel" cx="112" cy="62" r="11"/><circle class="v-hub" cx="112" cy="62" r="4"/>
+<rect class="v-light" x="140" y="48" width="6" height="7" rx="2"/>
+</svg><i></i><i></i><i></i></div></div>
+<div class="nd-sc sc4"><svg class="nd-house" viewBox="0 0 240 230" aria-hidden="true">
+<polygon class="h-floor" points="30,175 120,215 212,170 122,132"/>
+<polygon class="h-wall-r" points="120,152 212,106 212,170 120,215"/>
+<polygon class="h-wall-l" points="30,112 75,66 120,152 120,215 30,175"/>
+<polygon class="h-roof-r" points="71,60 163,14 218,104 124,152"/>
+<polygon class="h-roof-l" points="71,60 75,66 30,112 24,112"/>
+<polygon class="h-chim" points="150,30 164,23 164,44 150,51"/>
+<g class="h-wins">
+<polygon class="w w1" points="42,124 64,133.8 64,151.8 42,142"/><polygon class="w w2" points="84,143 106,152.8 106,170.8 84,161"/><polygon class="w w3" points="42,150 64,159.8 64,177.8 42,168"/><polygon class="w w4" points="84,169 106,178.8 106,194.8 84,185"/>
+<polygon class="w w5" points="126,160 148,149 148,167 126,178"/><polygon class="w w6" points="178,134 200,123 200,141 178,152"/><polygon class="w w7" points="178,162 200,151 200,169 178,180"/>
+</g>
+<polygon class="h-door" points="150,163 166,155 166,192 150,200"/>
+</svg><div class="nd-arr"><svg class="nd-van" viewBox="0 0 150 80" aria-hidden="true">
+<path class="v-body" d="M8 18h78a8 8 0 0 1 8 8v34H8a6 6 0 0 1-6-6V24a6 6 0 0 1 6-6z"/>
+<path class="v-cab" d="M94 28h22c5 0 9 2 12 6l12 15c2 2 3 5 3 8v3H94z"/>
+<path class="v-glass" d="M100 33h15c3 0 6 1 8 4l8 11h-31z"/>
+<rect class="v-stripe" x="8" y="38" width="80" height="9" rx="2"/>
+<path class="v-bolt" d="M44 24l-9 13h7l-3 11 11-15h-7z"/>
+<circle class="v-wheel" cx="34" cy="62" r="11"/><circle class="v-hub" cx="34" cy="62" r="4"/>
+<circle class="v-wheel" cx="112" cy="62" r="11"/><circle class="v-hub" cx="112" cy="62" r="4"/>
+<rect class="v-light" x="140" y="48" width="6" height="7" rx="2"/>
+</svg></div><svg class="nd-man" viewBox="0 0 60 110" aria-hidden="true">
+<circle class="m-head" cx="30" cy="16" r="10"/><path class="m-cap" d="M19 14a11 11 0 0 1 22 0v2H17z"/>
+<path class="m-body" d="M18 30h24l4 34H14z"/><rect class="m-leg m-leg1" x="19" y="62" width="9" height="40" rx="4"/><rect class="m-leg m-leg2" x="32" y="62" width="9" height="40" rx="4"/>
+<rect class="m-arm" x="8" y="32" width="8" height="30" rx="4"/><rect class="m-case" x="0" y="60" width="22" height="16" rx="3"/>
+</svg><span class="nd-bolt"><svg viewBox="0 0 24 24"><path d="M13.500 2L5 13.500h5.500L9.500 22 19 10h-5.800z"/></svg></span><p class="nd-cap">Da.</p></div>
+<div class="nd-sc sc5"><div class="nd-rays"></div><svg class="nd-house" viewBox="0 0 240 230" aria-hidden="true">
+<polygon class="h-floor" points="30,175 120,215 212,170 122,132"/>
+<polygon class="h-wall-r" points="120,152 212,106 212,170 120,215"/>
+<polygon class="h-wall-l" points="30,112 75,66 120,152 120,215 30,175"/>
+<polygon class="h-roof-r" points="71,60 163,14 218,104 124,152"/>
+<polygon class="h-roof-l" points="71,60 75,66 30,112 24,112"/>
+<polygon class="h-chim" points="150,30 164,23 164,44 150,51"/>
+<g class="h-wins">
+<polygon class="w w1" points="42,124 64,133.8 64,151.8 42,142"/><polygon class="w w2" points="84,143 106,152.8 106,170.8 84,161"/><polygon class="w w3" points="42,150 64,159.8 64,177.8 42,168"/><polygon class="w w4" points="84,169 106,178.8 106,194.8 84,185"/>
+<polygon class="w w5" points="126,160 148,149 148,167 126,178"/><polygon class="w w6" points="178,134 200,123 200,141 178,152"/><polygon class="w w7" points="178,162 200,151 200,169 178,180"/>
+</g>
+<polygon class="h-door" points="150,163 166,155 166,192 150,200"/>
+</svg><svg class="nd-check" viewBox="0 0 100 100" aria-hidden="true"><path d="M18 54l22 22 44-52"/></svg><p class="nd-word">LICHT AN</p></div>
+<div class="nd-bar" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i></div>
+<button class="nd-re" type="button" id="nd-re" aria-label="Animation anhalten oder fortsetzen"><span></span></button>
+</div>
+</div></section>
+
 <section class="st" id="s3" style="padding:0"><div class="pin cb" id="arc">
 <div class="half hl"><picture><source media="(max-width:700px)" srcset="../assets/img/kabel-m.jpg"><img src="../assets/img/kabel.jpg" alt="Durchtrenntes Kupferkabel" loading="lazy"></picture></div>
 <div class="half hr"><picture><source media="(max-width:700px)" srcset="../assets/img/kabel-m.jpg"><img src="../assets/img/kabel.jpg" alt="" loading="lazy"></picture></div>
