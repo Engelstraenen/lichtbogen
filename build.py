@@ -59,7 +59,8 @@ def emit(vdir, file, title, desc, body, scripts="", landing=False):
 <meta name="robots" content="noindex">
 <meta name="theme-color" content="#f4efe6">
 <link rel="icon" href="data:image/svg+xml,%%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%%3E%%3Crect width='32' height='32' rx='7' fill='%%23080a0f'/%%3E%%3Cpath d='M6 23a10 10 0 0 1 20 0' fill='none' stroke='%%23ffc83d' stroke-width='3' stroke-linecap='round'/%%3E%%3Ccircle cx='16' cy='23' r='2.500' fill='%%23ffc83d'/%%3E%%3C/svg%%3E">
-<script>(function(){var F=%(forced)s,t=F;if(!t){try{t=localStorage.getItem('lb-theme')}catch(e){}}if(!t)t=matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light';document.documentElement.setAttribute('data-theme',t)})()</script>%(head_extra)s
+<script>(function(){var F=%(forced)s,t=F;if(!t){try{t=localStorage.getItem('lb-theme')}catch(e){}}if(!t)t=matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light';document.documentElement.setAttribute('data-theme',t)})()</script>
+<script>try{fetch('../version.txt?'+Date.now(),{cache:'no-store'}).then(function(r){return r.ok?r.text():''}).then(function(v){v=v.trim();if(v&&v!=='%(ver)s'&&location.search.indexOf('v='+v)<0){var u=new URL(location.href);u.searchParams.set('v',v);location.replace(u.href)}}).catch(function(){})}catch(e){}</script>%(head_extra)s
 <link rel="preload" href="../assets/fonts/grotesk.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="stylesheet" href="../assets/css/style.css?v=%(ver)s">
 <link rel="stylesheet" href="../assets/css/%(css)s?v=%(ver)s">
@@ -369,13 +370,14 @@ for vdir, v in VARIANTS.items():
         emit(vdir, f, t, d, b, sc)
 # Hauptlink zeigt direkt die fertige Seite; die Übersicht der drei Testversionen liegt unter versionen.html
 (OUT / "versionen.html").write_text(landings.HUB, encoding="utf-8")
+(OUT / "version.txt").write_text(VER, encoding="utf-8")
 (OUT / "index.html").write_text("""<!doctype html>
 <html lang="de"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>LICHTBOGEN Elektrotechnik Dortmund (Demo)</title>
 <meta name="description" content="Demo von PROJEKT EX: Website für einen erfundenen Elektrobetrieb.">
-<meta http-equiv="refresh" content="0; url=stromausfall/">
+<noscript><meta http-equiv="refresh" content="0; url=stromausfall/"></noscript>
 <link rel="canonical" href="stromausfall/">
-<script>location.replace('stromausfall/' + location.search + location.hash);</script>
+<script>(function(){function go(v){var q=new URLSearchParams(location.search);if(v)q.set('v',v);var t=q.toString();location.replace('stromausfall/'+(t?'?'+t:'')+location.hash)}try{fetch('version.txt?'+Date.now(),{cache:'no-store'}).then(function(r){return r.ok?r.text():''}).then(function(v){go(v.trim())}).catch(function(){go('')})}catch(e){go('')}})();</script>
 <style>body{margin:0;background:#070a12;color:#fff;font:16px system-ui;display:grid;place-items:center;min-height:100vh}a{color:#ffb347}</style>
 </head><body><p><a href="stromausfall/">Weiter zur Seite</a></p></body></html>
 """, encoding="utf-8")
