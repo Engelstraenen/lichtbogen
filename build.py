@@ -353,7 +353,7 @@ LAND = {"haus": landings.v1, "schaltschrank": landings.v2, "stromausfall": landi
 for vdir, v in VARIANTS.items():
     body = LAND[vdir](KREISE, VIZ, CALL, TEL, I)
     extra = ""
-    if vdir == "schaltschrank":
+    if vdir in ("schaltschrank", "stromausfall"):
         extra = "\n<script>window.LB_SERVICES=%s;window.LB_VIZ=%s;</script>" % (
             landings.services_json(KREISE), landings.json.dumps(VIZ))
     emit(vdir, "index.html", "LICHTBOGEN · %s (Demo)" % v["name"],
