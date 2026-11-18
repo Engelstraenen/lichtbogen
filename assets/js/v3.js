@@ -33,8 +33,8 @@
         once.unobserve(en.target);
         if (en.target.classList.contains('split')) en.target.classList.add('in');
         else if (!reduce) {
-          var b = en.target, to = +b.getAttribute('data-count'), t0 = performance.now();
-          (function f(t) { var k = Math.min(1, (t - t0) / 1400); b.textContent = Math.round(to * (1 - Math.pow(1 - k, 3))); if (k < 1) requestAnimationFrame(f); })(t0);
+          var b = en.target, to = +b.getAttribute('data-count'), dv = +b.getAttribute('data-div') || 1, t0 = performance.now();
+          (function f(t) { var k = Math.min(1, (t - t0) / 1400), val = Math.round(to * (1 - Math.pow(1 - k, 3))); b.textContent = dv > 1 ? (val / dv).toFixed(1).replace('.', ',') : val; if (k < 1) requestAnimationFrame(f); })(t0);
         }
       });
     }, { threshold: 0.4 });
@@ -140,9 +140,7 @@
     a.onfinish = function () { stopWave(); };
   }
   function burst(bx, by) {
-    var W = innerWidth, H = innerHeight;
-    for (var i = 0; i < 4; i++) FX.bolt(bx, by, bx + (Math.random() - 0.5) * W * 0.9, by - Math.random() * H * 0.6, { life: 240 + Math.random() * 220, w: 3 });
-    FX.spark(bx, by, 26, '#d6e9ff');
+    FX.strike(bx, by, { n: 6, w: 3.4, reach: 0.6, life: 700, ring: Math.max(innerWidth, innerHeight) * 0.35, sparks: 60 });
   }
   /* Funke am Schalter, in dem Moment, in dem die Hand den Hebel umlegt */
   function spark1() {
@@ -187,28 +185,47 @@
   }
   stage.addEventListener('pointermove', function (e) { var r = stage.getBoundingClientRect(); ptx = (e.clientX - r.left) / r.width; pty = (e.clientY - r.top) / r.height; plast = performance.now(); });
   stage.addEventListener('pointerdown', function (e) { FX.spark(e.clientX, e.clientY, 22, '#bfe0ff'); });
+  /* stehender Lichtbogen: Formen bleiben ein paar Bilder stehen (knistern statt rauschen) */
+  var strands = [], sT = 0;
   function arcLoop(t) {
     if (!vis3) return;
     var cx = (tipL[0] + tipR[0]) / 2 / w, cy = tipL[1] / h;
-    if (t - plast > 1800) { ptx = cx + 0.04 * Math.sin(t / 900); pty = cy + 0.1 * Math.sin(t / 620); }
+    if (t - plast > 1800) { ptx = cx + 0.04 * Math.sin(t / 900); pty = cy - 0.05 + 0.09 * Math.sin(t / 620); }
     px += (clamp(ptx, tipL[0] / w + 0.02, tipR[0] / w - 0.02) - px) * 0.14; py += (clamp(pty, cy - 0.28, cy + 0.28) - py) * 0.14;
-    if (n++ % 2 === 0) {
-      g.setTransform(dpr, 0, 0, dpr, 0, 0); g.clearRect(0, 0, w, h);
-      g.globalCompositeOperation = 'lighter'; g.lineCap = 'round'; g.lineJoin = 'round';
-      if (power3 > 0.02) {
-        var mx = px * w, my = py * h, lw = 1 + 2.4 * power3;
-        FX.draw(g, tipL[0], tipL[1], mx, my, { w: lw, rough: 0.34, color: '#8fc4ff', alpha: 0.4 + 0.6 * power3 });
-        FX.draw(g, mx, my, tipR[0], tipR[1], { w: lw, rough: 0.34, color: '#8fc4ff', alpha: 0.4 + 0.6 * power3 });
-        if (Math.random() < 0.5 * power3) FX.draw(g, tipL[0], tipL[1], tipR[0], tipR[1], { w: 1.4, rough: 0.5, alpha: 0.6, color: '#8fc4ff' });
-        [tipL, tipR, [mx, my]].forEach(function (p, i) {
-          var R = (i === 2 ? 120 : 76) * (0.5 + power3 / 2), rg = g.createRadialGradient(p[0], p[1], 0, p[0], p[1], R);
-          rg.addColorStop(0, 'rgba(190,225,255,' + (0.55 * power3).toFixed(2) + ')'); rg.addColorStop(1, 'rgba(190,225,255,0)');
-          g.fillStyle = rg; g.fillRect(p[0] - R, p[1] - R, R * 2, R * 2);
+    g.setTransform(dpr, 0, 0, dpr, 0, 0); g.clearRect(0, 0, w, h);
+    g.globalCompositeOperation = 'lighter'; g.lineCap = 'round'; g.lineJoin = 'round';
+    if (power3 > 0.02) {
+      var mx = px * w, my = py * h, d = tipR[0] - tipL[0];
+      if (t - sT > 48) {
+        sT = t; strands = [];
+        /* Hauptkanal über den Zeigepunkt, dazu wilde Nebenkanäle */
+        var m1 = FX.jag(tipL[0], tipL[1], mx, my, d * 0.16), m2 = FX.jag(mx, my, tipR[0], tipR[1], d * 0.16);
+        strands.push({ pts: m1.concat(m2.slice(1)), w: 1, a: 1 });
+        var extra = 1 + Math.round(power3 * 2);
+        for (var i = 0; i < extra; i++) {
+          var oy = (Math.random() - 0.5) * d * 0.5 * power3, ox = (Math.random() - 0.5) * d * 0.2;
+          var e1 = FX.jag(tipL[0], tipL[1], mx + ox, my + oy, d * 0.28), e2 = FX.jag(mx + ox, my + oy, tipR[0], tipR[1], d * 0.28);
+          strands.push({ pts: e1.concat(e2.slice(1)), w: 0.38, a: 0.55 });
+        }
+        /* kleine Ausreißer an den Kupferenden */
+        [tipL, tipR].forEach(function (tp, k) {
+          if (Math.random() < 0.7) { var ang = (k ? Math.PI : 0) + (Math.random() - 0.5) * 2.2, len = d * (0.12 + Math.random() * 0.2) * power3; strands.push({ pts: FX.jag(tp[0], tp[1], tp[0] + Math.cos(ang) * len, tp[1] + Math.sin(ang) * len, len * 0.35), w: 0.3, a: 0.6 }); }
         });
-      } else if (Math.random() < 0.12) {           /* noch zu weit weg: nur einzelne Funken an den Enden */
-        var tp = Math.random() < 0.5 ? tipL : tipR, dir = tp === tipL ? 1 : -1;
-        FX.draw(g, tp[0], tp[1], tp[0] + dir * (20 + Math.random() * 50), tp[1] + (Math.random() - 0.5) * 60, { w: 1.2, rough: 0.5, color: '#8fc4ff', branch: false });
+        if (!reduce && Math.random() < 0.35 * power3) { var r = stage.getBoundingClientRect(), tp = Math.random() < 0.5 ? tipL : tipR; FX.spark(r.left + tp[0], r.top + tp[1], 3, '#ffd9a0'); }
       }
+      var fl = 0.82 + 0.18 * Math.sin(t * 0.09) * Math.sin(t * 0.023), lw = 1.4 + 3 * power3, al = (0.45 + 0.55 * power3) * fl;
+      /* Plasma: breiter, weicher Schein entlang des Hauptkanals */
+      var mp = strands[0].pts; g.beginPath(); g.moveTo(mp[0][0], mp[0][1]); for (var q = 1; q < mp.length; q++) g.lineTo(mp[q][0], mp[q][1]);
+      g.globalAlpha = 0.07 * power3 * fl; g.strokeStyle = '#5aa2ff'; g.lineWidth = 46 + 50 * power3; g.stroke();
+      g.globalAlpha = 0.1 * power3 * fl; g.lineWidth = 22 + 20 * power3; g.stroke(); g.globalAlpha = 1;
+      strands.forEach(function (st) { FX.glow(g, st.pts, st.pts.length, lw * st.w, al * st.a, '#6fb0ff'); });
+      FX.bloom(g, tipL[0], tipL[1], (70 + 60 * power3) * fl, 0.75 * power3, '210,232,255');
+      FX.bloom(g, tipR[0], tipR[1], (70 + 60 * power3) * fl, 0.75 * power3, '210,232,255');
+      FX.bloom(g, mx, my, (110 + 90 * power3) * fl, 0.4 * power3, '160,200,255');
+    } else if (n++ % 3 === 0 && Math.random() < 0.22) {           /* noch zu weit weg: einzelne Überschläge an den Enden */
+      var tp2 = Math.random() < 0.5 ? tipL : tipR, dir = tp2 === tipL ? 1 : -1;
+      var r2 = stage.getBoundingClientRect();
+      FX.bolt(r2.left + tp2[0], r2.top + tp2[1], r2.left + tp2[0] + dir * (30 + Math.random() * 90), r2.top + tp2[1] + (Math.random() - 0.5) * 90, { w: 1.2, life: 220, branches: 1, rough: 0.4 });
     }
     requestAnimationFrame(arcLoop);
   }

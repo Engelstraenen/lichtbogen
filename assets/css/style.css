@@ -340,3 +340,9 @@ details li{margin:4px 0}
 .hero--sub{padding:52px 0 22px}
 .hero--sub .hero-top{position:static;margin-bottom:16px}
 .fx{position:fixed;inset:0;width:100%;height:100%;z-index:85;pointer-events:none}
+
+/* Social-Media-Kanäle in der Fußzeile */
+.foot-soc{display:flex;gap:8px;margin-top:16px;flex-wrap:wrap}
+.soc-i{width:42px;height:42px;border-radius:50%;border:1px solid var(--line);background:none;color:inherit;display:grid;place-items:center;cursor:pointer;transition:transform .2s,border-color .2s,color .2s}
+.soc-i svg{width:20px;height:20px}
+.soc-i:hover{transform:translateY(-3px);border-color:var(--accent);color:var(--accent)}
