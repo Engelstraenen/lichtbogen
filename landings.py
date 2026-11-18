@@ -92,7 +92,7 @@ def v3(KREISE, VIZ, CALL, TEL, I):
 <div class="beats cam-txt">
 <div class="beat" data-a="-1" data-b=".1"><p class="eyebrow">Foto-Check</p><p class="big">Drei Fotos statt langer Erklärung.</p><p class="mid">Tipp auf den Auslöser.</p></div>
 <div class="beat" data-a=".13" data-b=".53"><p class="big" id="cam-say">Sicherungskasten.</p></div>
-<div class="beat" data-a=".57" data-b=".87"><p class="big">Ab zum Meister.</p></div>
+<div class="beat" data-a=".61" data-b=".87"><p class="big">Ab zum Meister.</p></div>
 <div class="beat" data-a=".91" data-b="2"><p class="big">Akte angelegt.<br><em>Der Meister ruft vorbereitet zurück.</em></p><p style="margin-top:22px;pointer-events:auto"><a class="btn pill" href="foto-check.html">Jetzt ausprobieren →</a></p></div>
 </div>
 </div></section>
