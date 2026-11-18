@@ -73,7 +73,9 @@ def v3(KREISE, VIZ, CALL, TEL, I):
 <div class="svc-grid" id="svc">%(cards)s</div></div></section>
 
 <section class="st" id="s5" style="padding:0"><div class="pin cam" id="cam">
-<div class="cam-bg cam-a"><picture><source media="(max-width:700px)" srcset="../assets/img/kamera-m.jpg"><img src="../assets/img/kamera.jpg" alt="Hand hält ein Smartphone vor einen Sicherungskasten im Keller" loading="lazy"></picture></div>
+<div class="cam-as" id="cam-as"><div class="cam-bg cam-a on"><picture><source media="(max-width:700px)" srcset="../assets/img/kamera-m.jpg"><img src="../assets/img/kamera.jpg" alt="Hand hält ein Smartphone vor einen Sicherungskasten im Keller" loading="lazy"></picture></div>
+<div class="cam-bg cam-a"><picture><source media="(max-width:700px)" srcset="../assets/img/kamera-2-m.jpg"><img src="../assets/img/kamera-2.jpg" alt="" loading="lazy"></picture></div>
+<div class="cam-bg cam-a"><picture><source media="(max-width:700px)" srcset="../assets/img/kamera-3-m.jpg"><img src="../assets/img/kamera-3.jpg" alt="" loading="lazy"></picture></div></div>
 <div class="cam-bg cam-b" id="cam-b"><picture><source media="(max-width:700px)" srcset="../assets/img/mappe-m.jpg"><img src="../assets/img/mappe.jpg" alt="Offene Mappe und Handy auf der Werkbank des Elektrikers" loading="lazy"></picture></div>
 <div class="cam-bg cam-c" id="cam-c"><picture><source media="(max-width:700px)" srcset="../assets/img/mappe-ok-m.jpg"><img src="../assets/img/mappe-ok.jpg" alt="" loading="lazy"></picture></div>
 <div class="vf" id="vf"><img id="vf-img" src="../assets/img/foto-1.jpg" alt=""><i class="vf-grid"></i>
@@ -85,12 +87,13 @@ def v3(KREISE, VIZ, CALL, TEL, I):
 <figure class="pol"><img src="../assets/img/foto-3.jpg" alt=""></figure>
 </div>
 <div class="cam-ok" id="cam-ok" aria-hidden="true"><svg viewBox="0 0 100 100"><circle cx="50" cy="50" r="40"/><path d="M31 52l13 13 26-29"/></svg></div>
+<div class="cam-cnt" id="cam-cnt" aria-hidden="true">0 von 3 in der Akte</div>
 <div class="cam-flash" id="cam-flash"></div>
 <div class="beats cam-txt">
-<div class="beat" data-a="-1" data-b=".14"><p class="eyebrow">Foto-Check</p><p class="big">Drei Fotos statt langer Erklärung.</p><p class="mid">Tipp auf den Auslöser.</p></div>
-<div class="beat" data-a=".19" data-b=".5"><p class="big" id="cam-say">Sicherungskasten.</p></div>
-<div class="beat" data-a=".56" data-b=".78"><p class="big">Ab zum Meister.</p></div>
-<div class="beat" data-a=".84" data-b="2"><p class="big">Akte angelegt.<br><em>Der Meister ruft vorbereitet zurück.</em></p><p style="margin-top:22px;pointer-events:auto"><a class="btn pill" href="foto-check.html">Jetzt ausprobieren →</a></p></div>
+<div class="beat" data-a="-1" data-b=".1"><p class="eyebrow">Foto-Check</p><p class="big">Drei Fotos statt langer Erklärung.</p><p class="mid">Tipp auf den Auslöser.</p></div>
+<div class="beat" data-a=".13" data-b=".53"><p class="big" id="cam-say">Sicherungskasten.</p></div>
+<div class="beat" data-a=".57" data-b=".87"><p class="big">Ab zum Meister.</p></div>
+<div class="beat" data-a=".91" data-b="2"><p class="big">Akte angelegt.<br><em>Der Meister ruft vorbereitet zurück.</em></p><p style="margin-top:22px;pointer-events:auto"><a class="btn pill" href="foto-check.html">Jetzt ausprobieren →</a></p></div>
 </div>
 </div></section>
 %(steps)s
