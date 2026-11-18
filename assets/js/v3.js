@@ -53,23 +53,38 @@
     });
   }
 
-  /* ---------- Szene 1: Film. Scrollen spult bis zum Griff an den Schalter ---------- */
-  var hotX = innerWidth / 2, hotY = innerHeight / 2, p1 = 0, manualOff = false;
-  var vid = $('#kvid'), vOK = false, playing = false;
-  /* Zeiten im Film (Sekunden) und Lage des Hauptschalters im Bild am Anfang und beim Griff */
-  var T0 = 1.7, TF = 3.5, TS = 5.45, TL = 6.7, RATE = 1.6, U0 = 0.44, V0 = 0.40, U1 = 0.445, V1 = 0.41;
-  function seek(t) { if (!vOK || playing || vid.seeking) return; if (Math.abs(vid.currentTime - t) > 0.03) vid.currentTime = t; }
-  function film() { root.classList.toggle('film', vOK && !manualOff); }
+  /* ---------- Szene 1: Film. Alles hängt nur an der Scroll-Position: vorwärts wie rückwärts ---------- */
+  var hotX = innerWidth / 2, hotY = innerHeight / 2, p1 = 0, prevP1 = -1, override = null, first = true;
+  var vid = $('#kvid'), vOK = false, vt = 0, vloopOn = false;
+  /* Zeiten im Film (Sekunden): Start, Griff, Funke, Licht an, Ende. Lage des Hauptschalters im Bild. */
+  var T0 = 1.7, TF = 3.5, TS = 5.45, TL = 6.7, TE = 6.95, TZ = 7.9, U0 = 0.44, V0 = 0.40, U1 = 0.445, V1 = 0.41;
+  /* Scroll-Anteile der Szene: A Start, B Hand am Schalter, C Licht ist an, D Hand ist weg */
+  var PA = 0.05, PB = 0.42, PC = 0.74, PD = 0.92;
+  var PS = PB + (TS - TF) / (TE - TF) * (PC - PB), PL = PB + (TL - TF) / (TE - TF) * (PC - PB);
+  function filmTime(p) {
+    if (p <= PA) return T0;
+    if (p <= PB) return T0 + (p - PA) / (PB - PA) * (TF - T0);
+    if (p <= PC) return TF + (p - PB) / (PC - PB) * (TE - TF);
+    return TE + clamp((p - PC) / (PD - PC), 0, 1) * (TZ - TE);
+  }
+  function film() { root.classList.toggle('film', vOK && override !== 'off'); }
+  function vloop() {
+    var target = override === 'on' ? Math.max(filmTime(p1), TZ) : filmTime(p1);
+    vt += (target - vt) * 0.22;
+    if (Math.abs(target - vt) < 0.012) vt = target;
+    if (vOK && !vid.seeking && Math.abs(vid.currentTime - vt) > 0.02) vid.currentTime = vt;
+    if (vt !== target && inView(s1)) requestAnimationFrame(vloop); else vloopOn = false;
+  }
   if (vid && !reduce) {
-    var ready = function () { if (vOK) return; vOK = true; kwrap.classList.add('has-vid'); film(); scene1(); };
+    var ready = function () { if (vOK) return; vOK = true; kwrap.classList.add('has-vid'); vt = filmTime(prog(s1)); film(); scene1(); };
     vid.addEventListener('loadeddata', ready); if (vid.readyState >= 2) ready();
     /* iPhone lädt Videos erst beim Abspielen: kurz stumm anspielen und gleich wieder anhalten */
-    try { var warm = vid.play(); if (warm && warm.then) warm.then(function () { if (!playing) { vid.pause(); vid.currentTime = T0; } }).catch(function () {}); } catch (e) {}
+    try { var warm = vid.play(); if (warm && warm.then) warm.then(function () { vid.pause(); vid.currentTime = vt || T0; }).catch(function () {}); } catch (e) {}
     vid.addEventListener('error', function () { vOK = false; kwrap.classList.remove('has-vid'); film(); }, true);
   }
   function scene1() {
     p1 = prog(s1);
-    var W = kwrap.offsetWidth, H = kwrap.offsetHeight, k = ease((p1 - 0.05) / (vOK ? 0.47 : 0.58));
+    var W = kwrap.offsetWidth, H = kwrap.offsetHeight, k = ease((p1 - 0.05) / 0.5);
     var zm = vOK ? (innerWidth < 720 ? 2.0 : 1.8) : (innerWidth < 720 ? 2.0 : 2.5);
     var s = 1 + (zm - 1) * k, u = vOK ? U0 + (U1 - U0) * k : 0.44, v = vOK ? V0 + (V1 - V0) * k : 0.40;
     var ox = (u - 0.5) * W, oy = (v - 0.5) * H, tx = -ox * s * k, ty = -oy * s * k;
@@ -79,10 +94,14 @@
     kwrap.style.transform = 'translate(calc(-50% + ' + tx.toFixed(1) + 'px),calc(-50% + ' + ty.toFixed(1) + 'px)) scale(' + s.toFixed(4) + ')';
     hotX = innerWidth / 2 + ox * s + tx; hotY = innerHeight / 2 + oy * s + ty;
     hot.style.transform = 'translate(' + (ox * s + tx).toFixed(1) + 'px,' + (oy * s + ty).toFixed(1) + 'px)';
-    hot.classList.toggle('show', p1 > (vOK ? 0.5 : 0.74) && isOut() && !playing);
-    if (vOK) seek(isOut() ? T0 + k * (TF - T0) : (vid.duration || 8) - 0.05);
+    hot.classList.toggle('show', p1 > 0.3 && p1 < PB + 0.04 && isOut());
+    /* wer die Schwelle überfährt, hebt den Handschalter oben wieder auf */
+    if (prevP1 >= 0 && ((prevP1 < PL) !== (p1 < PL))) override = null;
+    if (prevP1 >= 0 && prevP1 < PS && p1 >= PS && isOut() && !reduce) spark1();
+    prevP1 = p1;
+    applyLight();
+    if (vOK && !vloopOn) { vloopOn = true; requestAnimationFrame(vloop); }
     beats(beatSets[0], p1);
-    if (p1 > (vOK ? 0.6 : 0.94) && isOut() && !manualOff) power(true);
   }
 
   /* ---------- Taschenlampe ---------- */
@@ -104,66 +123,52 @@
   addEventListener('pointermove', function (e) { tx0 = e.clientX; ty0 = e.clientY; last = performance.now(); }, { passive: true });
   addEventListener('pointerdown', function (e) { tx0 = e.clientX; ty0 = e.clientY; last = performance.now(); }, { passive: true });
 
-  /* ---------- Licht an / aus ---------- */
-  var busy = false;
+  /* ---------- Licht an / aus: folgt der Scroll-Position, der Schalter oben kann es übersteuern ---------- */
+  var waveA = null, waveIv = 0;
   function setSwitch() { if (lsw) lsw.setAttribute('aria-checked', isOut() ? 'false' : 'true'); }
-  function lit() { root.classList.remove('out'); store(true); setSwitch(); }
-  function runWave(done) {
+  function stopWave() { if (waveA) { waveA.onfinish = null; waveA.cancel(); waveA = null; } clearInterval(waveIv); wave.classList.remove('go'); flash.classList.remove('go'); }
+  function runWave() {
+    if (!wave.animate) return;
+    stopWave();
     var W = innerWidth, H = innerHeight;
     wave.classList.add('go');
-    var a = wave.animate([{ transform: 'translate(-3%,-14vh)' }, { transform: 'translate(3%,112vh)' }], { duration: 1900, delay: 120, easing: 'cubic-bezier(.45,0,.2,1)', fill: 'both' });
-    var iv = setInterval(function () {
+    var a = waveA = wave.animate([{ transform: 'translate(-3%,-14vh)' }, { transform: 'translate(3%,112vh)' }], { duration: 1700, delay: 60, easing: 'cubic-bezier(.45,0,.2,1)', fill: 'both' });
+    waveIv = setInterval(function () {
       var p = a.effect && a.effect.getComputedTiming ? (a.effect.getComputedTiming().progress || 0) : 0, ey = -0.14 * H + p * 1.26 * H + 60;
       if (ey > 0 && ey < H + 40) FX.spark(Math.random() * W, ey + (Math.random() - 0.5) * 50, 7, '#ffd166');
     }, 70);
-    a.onfinish = function () { clearInterval(iv); wave.classList.remove('go'); flash.classList.remove('go'); busy = false; if (done) done(); };
+    a.onfinish = function () { stopWave(); };
   }
-  function power(full) {
-    if (busy || !isOut()) return;
-    busy = true; manualOff = false; film();
-    if (reduce || !wave.animate) { lit(); busy = false; return; }
-    var W = innerWidth, H = innerHeight, bx = W * 0.56, by = H * 0.44;
+  function burst(bx, by) {
+    var W = innerWidth, H = innerHeight;
+    for (var i = 0; i < 6; i++) FX.bolt(bx, by, bx + (Math.random() - 0.5) * W * 0.9, by - Math.random() * H * 0.6, { life: 260 + Math.random() * 260, w: 3 });
+    FX.spark(bx, by, 46, '#d6e9ff');
+  }
+  /* Funke am Schalter, in dem Moment, in dem die Hand den Hebel umlegt */
+  function spark1() {
     flash.classList.remove('go'); void flash.offsetWidth; flash.classList.add('go');
-    var burst = function () {
-      for (var i = 0; i < 6; i++) FX.bolt(bx, by, bx + (Math.random() - 0.2) * W * 0.8, by - Math.random() * H * 0.7, { life: 260 + Math.random() * 260, w: 3 });
-      FX.spark(bx, by, 46, '#d6e9ff');
-    };
-    if (!full) { burst(); setTimeout(function () { lit(); runWave(); }, 180); return; }
-    if (vOK) {
-      /* der Film läuft von selbst weiter: Hand greift, Hebel hoch, Funke, Licht */
-      flash.classList.remove('go'); playing = true; hot.classList.remove('show');
-      bx = hotX; by = hotY;
-      if (vid.currentTime < TF - 0.05 || vid.currentTime > TL) vid.currentTime = TF;
-      var sparked = false, done = false;
-      var watch = function () {
-        if (done) return;
-        if (!sparked && vid.currentTime >= TS) { sparked = true; void flash.offsetWidth; flash.classList.add('go'); burst(); setTimeout(burst, 220); }
-        if (vid.currentTime >= TL || vid.ended) { done = true; vid.playbackRate = 1; lit(); runWave(function () { playing = false; }); return; }
-        requestAnimationFrame(watch);
-      };
-      vid.playbackRate = RATE; var pr = vid.play(); if (pr && pr.catch) pr.catch(function () { done = true; playing = false; vid.currentTime = (vid.duration || 8) - 0.05; lit(); runWave(); });
-      requestAnimationFrame(watch);
-      return;
+    burst(hotX, hotY); setTimeout(function () { burst(hotX, hotY); }, 200);
+  }
+  function wantLit() { return override ? override === 'on' : p1 >= PL; }
+  function applyLight() {
+    var want = wantLit(), is = !isOut();
+    film();
+    if (want === is) { first = false; return; }
+    if (want) {
+      root.classList.remove('out');
+      if (!first && !reduce) { if (override === 'on') burst(innerWidth * 0.5, innerHeight * 0.4); runWave(); }
+    } else {
+      stopWave(); root.classList.add('out'); x = hotX; y = hotY; startTorch();
     }
-    flip.classList.add('go');
-    $('img', flip).animate([{ transform: 'scale(1.35)' }, { transform: 'scale(1.04)' }], { duration: 1500, easing: 'cubic-bezier(.1,.7,.2,1)', fill: 'forwards' });
-    burst(); setTimeout(burst, 260); setTimeout(burst, 620);
-    setTimeout(function () {
-      lit();
-      flip.animate([{ opacity: 1 }, { opacity: 0 }], { duration: 260, fill: 'forwards' }).onfinish = function () { flip.classList.remove('go'); flip.getAnimations().forEach(function (a) { a.cancel(); }); };
-      runWave();
-    }, 1250);
+    first = false; setSwitch();
   }
-  function dark() {
-    if (busy || isOut()) return;
-    manualOff = true; film();
-    root.classList.add('out'); store(false); setSwitch(); if (vOK) { vid.pause(); scene1(); }
-    x = innerWidth - 80; y = 40; startTorch();
-    if (window.LB) window.LB.toast('Licht aus. Finger oder Maus sind jetzt die Taschenlampe.');
-  }
-  if (lsw) lsw.addEventListener('click', function () { isOut() ? power(inView(s1) && p1 > 0.5) : dark(); });
-  hot.addEventListener('click', function () { power(true); });
-  $('#replay').addEventListener('click', function () { store(false); scrollTo(0, 0); location.reload(); });
+  if (lsw) lsw.addEventListener('click', function () {
+    override = isOut() ? 'on' : 'off'; applyLight(); scene1();
+    if (override === 'off' && window.LB) window.LB.toast('Licht aus. Finger oder Maus sind jetzt die Taschenlampe.');
+  });
+  function toP1(p) { var top = s1.getBoundingClientRect().top + scrollY; scrollTo({ top: top + (s1.offsetHeight - innerHeight) * p, behavior: reduce ? 'auto' : 'smooth' }); }
+  hot.addEventListener('click', function () { toP1(PC + 0.03); });
+  $('#replay').addEventListener('click', function () { override = null; scrollTo({ top: 0, behavior: reduce ? 'auto' : 'smooth' }); });
   setSwitch(); if (isOut()) startTorch();
 
   /* ---------- Szene 3: Kabelenden fahren zusammen, Lichtbogen ---------- */
@@ -210,11 +215,12 @@
 
   /* ---------- Szene 5: selbst fotografieren, Polaroids fliegen zum Meister ---------- */
   var cam = $('#cam'), vf = $('#vf'), vfImg = $('#vf-img'), vfN = $('#vf-n'), shut = $('#shut'), pols = $$('.pol', cam);
-  var camOk = $('#cam-ok'), OKIMG = false; /* OKIMG = true, sobald das Schlussbild mit Haken da ist */
+  var camOk = $('#cam-ok'), OKIMG = true; /* OKIMG = true, sobald das Schlussbild mit Haken da ist */
   var camB = $('#cam-b'), camC = $('#cam-c'), camFlash = $('#cam-flash'), camSay = $('#cam-say');
   /* Lage im Foto (Anteile): Handy-Display im Kellerbild, Mappe und Seitenverhältnisse */
   var VF = [0.441, 0.302, 0.562, 0.778], FOLD = [0.535, 0.66], ARA = 16 / 9, FOCA = 0.5, FOCB = 0.52;
-  var NAMES = ['Sicherungskasten.', 'Zähler.', 'Problemstelle.'], shots = 0, motif = 0, shotT = [0, 0, 0], landed = [false, false, false], p5 = 0, loop5 = false;
+  var NAMES = ['Sicherungskasten.', 'Zähler.', 'Problemstelle.'], P5 = [0.12, 0.27, 0.42], D5 = 0.11;
+  var shots = -1, motif = -1, sd = [0, 0, 0], landed = [false, false, false], p5 = 0, loop5 = false;
   var camAs = $('#cam-as'), camBgs = $$('.cam-a', cam), camCnt = $('#cam-cnt');
   var vfR = { x: 0, y: 0, w: 10, h: 10 }, fold = [0, 0], cw = 0, ch = 0, pw = 150;
   function cov(w, h, u, v, px) { var dw = Math.max(w, h * ARA), dh = dw / ARA; return [(w - dw) * px + u * dw, (h - dh) * 0.5 + v * dh]; }
@@ -230,33 +236,40 @@
     camFlash.style.setProperty('--fy', ((vfR.y + vfR.h * 0.1) / ch * 100).toFixed(1) + '%');
     $$('.cam-bg img', cam).forEach(function (im, i) { im.style.objectPosition = ((i ? FOCB : FOCA) * 100) + '% 50%'; });
   }
-  /* nächstes Motiv vor die Kamera: Hintergrund wechselt, die Kamera schwenkt kurz */
-  function nextMotif() {
-    if (motif >= 2) return;
-    motif++;
-    camBgs.forEach(function (el, i) { el.classList.toggle('on', i === motif); });
-    vfImg.src = vfImg.src.replace(/foto-\d/, 'foto-' + (motif + 1)); vfN.textContent = 'Foto ' + (motif + 1) + ' von 3'; camSay.textContent = NAMES[motif];
-    if (camAs.animate && !reduce) camAs.animate([{ transform: 'translateX(0) scale(1)' }, { transform: 'translateX(-3.5%) scale(1.06)', offset: 0.45 }, { transform: 'translateX(0) scale(1)' }], { duration: 900, easing: 'cubic-bezier(.4,0,.2,1)' });
+  /* Alles hängt nur an der Scroll-Position: Foto i entsteht bei P5[i], rückwärts verschwindet es wieder */
+  function setMotif(m) {
+    if (m === motif) return;
+    var fwd = motif >= 0 && m > motif; motif = m;
+    camBgs.forEach(function (el, i) { el.classList.toggle('on', i === m); });
+    vfImg.src = vfImg.src.replace(/foto-\d/, 'foto-' + (m + 1)); vfN.textContent = 'Foto ' + (m + 1) + ' von 3';
+    if (fwd && camAs.animate && !reduce) camAs.animate([{ transform: 'translateX(0) scale(1)' }, { transform: 'translateX(-3.5%) scale(1.06)', offset: 0.45 }, { transform: 'translateX(0) scale(1)' }], { duration: 800, easing: 'cubic-bezier(.4,0,.2,1)' });
   }
+  function setShots(n) {
+    if (n === shots) return;
+    var fwd = shots >= 0 && n > shots; shots = n;
+    cam.classList.toggle('done', n >= 3);
+    if (fwd && !reduce) {
+      camFlash.classList.remove('go'); void camFlash.offsetWidth; camFlash.classList.add('go');
+      if (FX) { var r = cam.getBoundingClientRect(); FX.spark(r.left + vfR.x + vfR.w / 2, r.top + vfR.y, 30, '#fff3c9'); }
+    }
+  }
+  /* Tipp auf den Auslöser: scrollt genau bis hinter das nächste Foto */
   function shoot() {
-    var now = performance.now();
-    if (shots >= 3 || shots > motif || (shots && now - shotT[shots - 1] < 1500)) return;
-    var i = shots++; shotT[i] = now;
-    camFlash.classList.remove('go'); void camFlash.offsetWidth; camFlash.classList.add('go');
-    if (FX && !reduce) { var r = cam.getBoundingClientRect(); FX.spark(r.left + vfR.x + vfR.w / 2, r.top + vfR.y, 30, '#fff3c9'); }
-    if (shots < 3) setTimeout(nextMotif, reduce ? 0 : 1250);
-    else { vfN.textContent = '3 von 3'; setTimeout(function () { camSay.textContent = 'Zack. Zack. Zack.'; }, 900); cam.classList.add('done'); }
-    if (!loop5) { loop5 = true; requestAnimationFrame(tick5); }
+    var n = p5 < P5[0] + D5 * 0.9 ? 0 : p5 < P5[1] + D5 * 0.9 ? 1 : 2;
+    var top = s5.getBoundingClientRect().top + scrollY;
+    scrollTo({ top: top + (s5.offsetHeight - innerHeight) * (P5[n] + D5 + 0.004), behavior: reduce ? 'auto' : 'smooth' });
   }
   function back(t) { t = clamp(t, 0, 1); var c = 1.7; return 1 + (c + 1) * Math.pow(t - 1, 3) + c * Math.pow(t - 1, 2); }
-  function placePols(now) {
-    var cx = vfR.x + vfR.w / 2, ty = vfR.y, busy = false, r = cam.getBoundingClientRect(), nLand = 0;
+  function placePols() {
+    var cx = vfR.x + vfR.w / 2, ty = vfR.y, moving = false, r = cam.getBoundingClientRect(), nLand = 0;
     var fan = [[-1.02, 0.1, -11], [0, -0.16, 2], [1.02, 0.1, 12]], big = cw < 720 ? 2.0 : 1.9;
     pols.forEach(function (el, i) {
-      if (i >= shots) { el.style.opacity = 0; el.style.zIndex = 1; return; }
-      var s = reduce ? 1 : (now - shotT[i]) / 1500; if (s < 1) busy = true;
+      var target = clamp((p5 - P5[i]) / D5, 0, 1);
+      if (reduce) sd[i] = target; else { sd[i] += (target - sd[i]) * 0.16; if (Math.abs(target - sd[i]) < 0.003) sd[i] = target; else moving = true; }
+      var s = sd[i];
+      if (s <= 0) { el.style.opacity = 0; el.style.zIndex = 1; landed[i] = false; return; }
       /* 1. Foto poppt groß aus dem Handy, bleibt kurz stehen, legt sich dann in den Fächer */
-      var a = back(s / 0.22), h = ease((s - 0.62) / 0.38);
+      var a = back(s / 0.3), h = ease((s - 0.62) / 0.38);
       var bx = cw / 2, by = ch * 0.43, fx = cx + fan[i][0] * pw, fy = ty + fan[i][1] * pw + pw * 0.1;
       var x = cx + (bx - cx) * a, y = (ty + pw * 0.4) + (by - (ty + pw * 0.4)) * a, sc = 0.3 + (big - 0.3) * a, rot = (i - 1) * 3 * a, op = clamp(s * 9, 0, 1);
       x += (fx - x) * h; y += (fy - y) * h; sc += (1 - sc) * h; rot += (fan[i][2] - rot) * h;
@@ -277,17 +290,14 @@
       if (isIn) nLand++;
     });
     camCnt.textContent = nLand + ' von 3 in der Akte';
-    return busy;
+    return moving;
   }
-  function tick5(now) {
-    scene5();
-    if ((placePols(now) || wantShots() > shots) && inView(s5)) requestAnimationFrame(tick5); else loop5 = false;
-  }
-  /* wer nur scrollt, bekommt die drei Fotos trotzdem, eins nach dem anderen */
-  function wantShots() { return p5 > 0.44 ? 3 : p5 > 0.28 ? 2 : p5 > 0.12 ? 1 : 0; }
+  function tick5() { if (placePols() && inView(s5)) requestAnimationFrame(tick5); else loop5 = false; }
   function scene5() {
     p5 = prog(s5);
-    if (wantShots() > shots && inView(s5)) { shoot(); if (!loop5) { loop5 = true; requestAnimationFrame(tick5); } }
+    setShots(p5 >= P5[2] ? 3 : p5 >= P5[1] ? 2 : p5 >= P5[0] ? 1 : 0);
+    setMotif(p5 >= P5[2] - 0.035 ? 2 : p5 >= P5[1] - 0.035 ? 1 : 0);
+    camSay.textContent = p5 >= P5[2] + D5 ? 'Zack. Zack. Zack.' : NAMES[motif];
     var k = ease((p5 - 0.56) / 0.07);
     camB.style.opacity = k.toFixed(3); vf.style.opacity = (1 - ease((p5 - 0.55) / 0.05)).toFixed(3);
     vf.style.pointerEvents = p5 > 0.55 ? 'none' : 'auto';
@@ -296,7 +306,7 @@
     var co = Math.min(ease((p5 - 0.62) / 0.04), 1 - ease((p5 - 0.87) / 0.03));
     camCnt.style.opacity = co.toFixed(3);
     camCnt.style.transform = 'translate(' + fold[0].toFixed(1) + 'px,' + (fold[1] + pw * 0.55).toFixed(1) + 'px) translate(-50%,0)';
-    placePols(performance.now());
+    if (!loop5) { loop5 = true; requestAnimationFrame(tick5); }
     beats(beatSets[2], p5);
   }
   if (shut) shut.addEventListener('click', shoot);

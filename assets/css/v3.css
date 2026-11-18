@@ -40,7 +40,7 @@ html.out .bar,html.out .toast{display:none}
 
 /* ---------- gepinnte Szenen ---------- */
 .st{position:relative}
-#s1{height:320vh}#s3{height:330vh}#s5{height:560vh}
+#s1{height:360vh}#s3{height:330vh}#s5{height:560vh}
 .pin{position:sticky;top:0;height:100vh;height:100svh;overflow:hidden}
 .beats{position:absolute;inset:0;pointer-events:none;z-index:4}
 .beat{position:absolute;left:0;right:0;top:50%;padding:0 6vw;transform:translateY(-50%);opacity:0;text-align:center;will-change:transform,opacity;text-shadow:0 2px 40px rgba(0,0,0,.85)}
