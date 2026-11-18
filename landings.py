@@ -72,20 +72,26 @@ def v3(KREISE, VIZ, CALL, TEL, I):
 <div class="sec-head"><p class="eyebrow">Leistungen</p><h2>Sechs Dinge, die wir unter Strom setzen.</h2><p class="lead">Tipp eine Karte an. Sie geht auf, und wieder zu.</p></div>
 <div class="svc-grid" id="svc">%(cards)s</div></div></section>
 
-<section class="st" id="s5" style="padding:0"><div class="pin phs">
-<div class="ph" id="ph"><img src="../assets/img/handy.jpg" alt="Hand hält ein Smartphone" loading="lazy">
-<div class="ph-screen" id="ph-screen" aria-hidden="true">
-<div class="scr on"><b>LICHTBOGEN</b><span>Foto-Check</span><em>3 Fotos, 2 Minuten</em></div>
-<div class="scr"><img src="../assets/img/kasten-m.jpg" alt=""><span class="sm">Foto 1 · Zählerschrank</span><u></u></div>
-<div class="scr"><div class="thumbs"><img src="../assets/img/kasten-m.jpg" alt=""><img src="../assets/img/kabel-m.jpg" alt=""><img src="../assets/img/hand-m.jpg" alt=""></div><span class="sm">3 von 3 Fotos</span><em>Abschicken</em></div>
-<div class="scr"><i class="okc">✓</i><span>Akte angelegt</span><span class="sm">Rückruf noch heute</span></div>
-</div></div>
-<div class="wrap ph-txt"><div class="beats rel">
-<div class="beat" data-a="-1" data-b=".22"><p class="eyebrow">Foto-Check</p><p class="big">Der kürzeste Weg zum Elektriker: <em>drei Fotos.</em></p></div>
-<div class="beat" data-a=".28" data-b=".47"><p class="big">Zählerschrank fotografieren.</p></div>
-<div class="beat" data-a=".53" data-b=".72"><p class="big">Problemstelle und Raum dazu. Abschicken.</p></div>
-<div class="beat" data-a=".78" data-b="2"><p class="big">Fertig. Der Meister ruft <em>vorbereitet</em> zurück.</p><p style="margin-top:22px;pointer-events:auto"><a class="btn pill" href="foto-check.html">Jetzt ausprobieren →</a></p></div>
-</div></div>
+<section class="st" id="s5" style="padding:0"><div class="pin cam" id="cam">
+<div class="cam-bg cam-a"><picture><source media="(max-width:700px)" srcset="../assets/img/kamera-m.jpg"><img src="../assets/img/kamera.jpg" alt="Hand hält ein Smartphone vor einen Sicherungskasten im Keller" loading="lazy"></picture></div>
+<div class="cam-bg cam-b" id="cam-b"><picture><source media="(max-width:700px)" srcset="../assets/img/mappe-m.jpg"><img src="../assets/img/mappe.jpg" alt="Offene Mappe und Handy auf der Werkbank des Elektrikers" loading="lazy"></picture></div>
+<div class="cam-bg cam-c" id="cam-c"><picture><source media="(max-width:700px)" srcset="../assets/img/mappe-ok-m.jpg"><img src="../assets/img/mappe-ok.jpg" alt="" loading="lazy"></picture></div>
+<div class="vf" id="vf"><img id="vf-img" src="../assets/img/foto-1.jpg" alt=""><i class="vf-grid"></i>
+<span class="vf-n" id="vf-n">Foto 1 von 3</span>
+<button class="vf-shut" id="shut" type="button" aria-label="Foto aufnehmen"><i></i></button></div>
+<div class="pols" id="pols" aria-hidden="true">
+<figure class="pol"><img src="../assets/img/foto-1.jpg" alt=""></figure>
+<figure class="pol"><img src="../assets/img/foto-2.jpg" alt=""></figure>
+<figure class="pol"><img src="../assets/img/foto-3.jpg" alt=""></figure>
+</div>
+<div class="cam-ok" id="cam-ok" aria-hidden="true"><svg viewBox="0 0 100 100"><circle cx="50" cy="50" r="40"/><path d="M31 52l13 13 26-29"/></svg></div>
+<div class="cam-flash" id="cam-flash"></div>
+<div class="beats cam-txt">
+<div class="beat" data-a="-1" data-b=".14"><p class="eyebrow">Foto-Check</p><p class="big">Drei Fotos statt langer Erklärung.</p><p class="mid">Tipp auf den Auslöser.</p></div>
+<div class="beat" data-a=".19" data-b=".5"><p class="big" id="cam-say">Sicherungskasten.</p></div>
+<div class="beat" data-a=".56" data-b=".78"><p class="big">Ab zum Meister.</p></div>
+<div class="beat" data-a=".84" data-b="2"><p class="big">Akte angelegt.<br><em>Der Meister ruft vorbereitet zurück.</em></p><p style="margin-top:22px;pointer-events:auto"><a class="btn pill" href="foto-check.html">Jetzt ausprobieren →</a></p></div>
+</div>
 </div></section>
 %(steps)s
 <section class="v3-cta"><div class="wrap">
