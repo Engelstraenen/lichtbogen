@@ -57,18 +57,20 @@
   var hotX = innerWidth / 2, hotY = innerHeight / 2, p1 = 0, manualOff = false;
   var vid = $('#kvid'), vOK = false, playing = false;
   /* Zeiten im Film (Sekunden) und Lage des Hauptschalters im Bild am Anfang und beim Griff */
-  var TF = 2.9, TS = 4.95, TL = 5.35, U0 = 0.44, V0 = 0.40, U1 = 0.43, V1 = 0.36;
+  var TF = 2.3, TS = 5.45, TL = 6.7, RATE = 1.6, U0 = 0.44, V0 = 0.40, U1 = 0.445, V1 = 0.41;
   function seek(t) { if (!vOK || playing || vid.seeking) return; if (Math.abs(vid.currentTime - t) > 0.03) vid.currentTime = t; }
   function film() { root.classList.toggle('film', vOK && !manualOff); }
   if (vid && !reduce) {
     var ready = function () { if (vOK) return; vOK = true; kwrap.classList.add('has-vid'); film(); scene1(); };
     vid.addEventListener('loadeddata', ready); if (vid.readyState >= 2) ready();
+    /* Handy bekommt die kleinere Fassung */
+    vid.src = vid.getAttribute(innerWidth < 720 ? 'data-src-m' : 'data-src'); vid.load();
     vid.addEventListener('error', function () { vOK = false; kwrap.classList.remove('has-vid'); film(); }, true);
   }
   function scene1() {
     p1 = prog(s1);
     var W = kwrap.offsetWidth, H = kwrap.offsetHeight, k = ease((p1 - 0.14) / (vOK ? 0.5 : 0.58));
-    var zm = vOK ? (innerWidth < 720 ? 1.35 : 1.12) : (innerWidth < 720 ? 2.0 : 2.5);
+    var zm = vOK ? (innerWidth < 720 ? 2.0 : 1.8) : (innerWidth < 720 ? 2.0 : 2.5);
     var s = 1 + (zm - 1) * k, u = vOK ? U0 + (U1 - U0) * k : 0.44, v = vOK ? V0 + (V1 - V0) * k : 0.40;
     var ox = (u - 0.5) * W, oy = (v - 0.5) * H, tx = -ox * s * k, ty = -oy * s * k;
     /* nicht über den Bildrand hinaus schieben */
@@ -136,10 +138,10 @@
       var watch = function () {
         if (done) return;
         if (!sparked && vid.currentTime >= TS) { sparked = true; void flash.offsetWidth; flash.classList.add('go'); burst(); setTimeout(burst, 220); }
-        if (vid.currentTime >= TL || vid.ended) { done = true; lit(); runWave(function () { playing = false; }); return; }
+        if (vid.currentTime >= TL || vid.ended) { done = true; vid.playbackRate = 1; lit(); runWave(function () { playing = false; }); return; }
         requestAnimationFrame(watch);
       };
-      var pr = vid.play(); if (pr && pr.catch) pr.catch(function () { done = true; playing = false; vid.currentTime = (vid.duration || 8) - 0.05; lit(); runWave(); });
+      vid.playbackRate = RATE; var pr = vid.play(); if (pr && pr.catch) pr.catch(function () { done = true; playing = false; vid.currentTime = (vid.duration || 8) - 0.05; lit(); runWave(); });
       requestAnimationFrame(watch);
       return;
     }
