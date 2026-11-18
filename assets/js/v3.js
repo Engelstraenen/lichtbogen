@@ -53,19 +53,34 @@
     });
   }
 
-  /* ---------- Szene 1: Kamera fährt auf den Hauptschalter ---------- */
+  /* ---------- Szene 1: Film. Scrollen spult bis zum Griff an den Schalter ---------- */
   var hotX = innerWidth / 2, hotY = innerHeight / 2, p1 = 0, manualOff = false;
+  var vid = $('#kvid'), vOK = false, playing = false;
+  /* Zeiten im Film (Sekunden) und Lage des Hauptschalters im Bild am Anfang und beim Griff */
+  var TF = 2.9, TS = 4.95, TL = 5.35, U0 = 0.44, V0 = 0.40, U1 = 0.43, V1 = 0.36;
+  function seek(t) { if (!vOK || playing || vid.seeking) return; if (Math.abs(vid.currentTime - t) > 0.03) vid.currentTime = t; }
+  function film() { root.classList.toggle('film', vOK && !manualOff); }
+  if (vid && !reduce) {
+    var ready = function () { if (vOK) return; vOK = true; kwrap.classList.add('has-vid'); film(); scene1(); };
+    vid.addEventListener('loadeddata', ready); if (vid.readyState >= 2) ready();
+    vid.addEventListener('error', function () { vOK = false; kwrap.classList.remove('has-vid'); film(); }, true);
+  }
   function scene1() {
     p1 = prog(s1);
-    var W = kwrap.offsetWidth, H = kwrap.offsetHeight, k = ease((p1 - 0.2) / 0.58);
-    var s = 1 + ((innerWidth < 720 ? 2.0 : 2.5) - 1) * k;
-    var ox = (0.44 - 0.5) * W, oy = (0.40 - 0.5) * H, tx = -ox * s * k, ty = -oy * s * k;
+    var W = kwrap.offsetWidth, H = kwrap.offsetHeight, k = ease((p1 - 0.14) / (vOK ? 0.5 : 0.58));
+    var zm = vOK ? (innerWidth < 720 ? 1.35 : 1.12) : (innerWidth < 720 ? 2.0 : 2.5);
+    var s = 1 + (zm - 1) * k, u = vOK ? U0 + (U1 - U0) * k : 0.44, v = vOK ? V0 + (V1 - V0) * k : 0.40;
+    var ox = (u - 0.5) * W, oy = (v - 0.5) * H, tx = -ox * s * k, ty = -oy * s * k;
+    /* nicht über den Bildrand hinaus schieben */
+    var mx = Math.max(0, (W * s - innerWidth) / 2), my = Math.max(0, (H * s - innerHeight) / 2);
+    tx = clamp(tx, -mx, mx); ty = clamp(ty, -my, my);
     kwrap.style.transform = 'translate(calc(-50% + ' + tx.toFixed(1) + 'px),calc(-50% + ' + ty.toFixed(1) + 'px)) scale(' + s.toFixed(4) + ')';
     hotX = innerWidth / 2 + ox * s + tx; hotY = innerHeight / 2 + oy * s + ty;
     hot.style.transform = 'translate(' + (ox * s + tx).toFixed(1) + 'px,' + (oy * s + ty).toFixed(1) + 'px)';
-    hot.classList.toggle('show', p1 > 0.74 && isOut());
+    hot.classList.toggle('show', p1 > (vOK ? 0.6 : 0.74) && isOut() && !playing);
+    if (vOK) seek(isOut() ? k * TF : (vid.duration || 8) - 0.05);
     beats(beatSets[0], p1);
-    if (p1 > 0.94 && isOut() && !manualOff) power(true);
+    if (p1 > (vOK ? 0.72 : 0.94) && isOut() && !manualOff) power(true);
   }
 
   /* ---------- Taschenlampe ---------- */
@@ -103,7 +118,7 @@
   }
   function power(full) {
     if (busy || !isOut()) return;
-    busy = true; manualOff = false;
+    busy = true; manualOff = false; film();
     if (reduce || !wave.animate) { lit(); busy = false; return; }
     var W = innerWidth, H = innerHeight, bx = W * 0.56, by = H * 0.44;
     flash.classList.remove('go'); void flash.offsetWidth; flash.classList.add('go');
@@ -112,6 +127,22 @@
       FX.spark(bx, by, 46, '#d6e9ff');
     };
     if (!full) { burst(); setTimeout(function () { lit(); runWave(); }, 180); return; }
+    if (vOK) {
+      /* der Film läuft von selbst weiter: Hand greift, Hebel hoch, Funke, Licht */
+      flash.classList.remove('go'); playing = true; hot.classList.remove('show');
+      bx = hotX; by = hotY;
+      if (vid.currentTime < TF - 0.05 || vid.currentTime > TL) vid.currentTime = TF;
+      var sparked = false, done = false;
+      var watch = function () {
+        if (done) return;
+        if (!sparked && vid.currentTime >= TS) { sparked = true; void flash.offsetWidth; flash.classList.add('go'); burst(); setTimeout(burst, 220); }
+        if (vid.currentTime >= TL || vid.ended) { done = true; lit(); runWave(function () { playing = false; }); return; }
+        requestAnimationFrame(watch);
+      };
+      var pr = vid.play(); if (pr && pr.catch) pr.catch(function () { done = true; playing = false; vid.currentTime = (vid.duration || 8) - 0.05; lit(); runWave(); });
+      requestAnimationFrame(watch);
+      return;
+    }
     flip.classList.add('go');
     $('img', flip).animate([{ transform: 'scale(1.35)' }, { transform: 'scale(1.04)' }], { duration: 1500, easing: 'cubic-bezier(.1,.7,.2,1)', fill: 'forwards' });
     burst(); setTimeout(burst, 260); setTimeout(burst, 620);
@@ -123,8 +154,8 @@
   }
   function dark() {
     if (busy || isOut()) return;
-    manualOff = true;
-    root.classList.add('out'); store(false); setSwitch();
+    manualOff = true; film();
+    root.classList.add('out'); store(false); setSwitch(); if (vOK) { vid.pause(); scene1(); }
     x = innerWidth - 80; y = 40; startTorch();
     if (window.LB) window.LB.toast('Licht aus. Finger oder Maus sind jetzt die Taschenlampe.');
   }
