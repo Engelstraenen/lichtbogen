@@ -212,3 +212,4 @@ html.out.film .shade{display:none}
 /* Kabel-Szene: der dunkle Auslauf gehört an den unteren Rand (die Vignette-Regel hatte ihn nach oben gezogen) */
 .cb::after{top:auto;bottom:0;height:22%;box-shadow:none}
 .cb::before{height:7%}
+@media (min-width:720px){.beat.top{top:17vh}}
