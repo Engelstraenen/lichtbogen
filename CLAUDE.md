@@ -29,10 +29,13 @@ build.py ändern → `python3 build.py` → lokal prüfen → commit → gh-page
 ## 8. Offene Fragen
 - Umzug nach projektex.de/referenzen/lichtbogen/ (wartet auf OK).
 - Optional: Fotos über SJinn ergänzen.
+- Welches Konzept (1 Haus, 2 Sicherungskasten, 3 Stromausfall)? Wartet auf Eugen.
 
 ## 9. Entschieden
 - 18.11.2026: Name LICHTBOGEN, Stadt Dortmund, rein grafisch. Verbesserungen 1–8 freigegeben (Zugschnur, Sicherungskasten, Notdienst im Dunkeln, ?firma=-Link, Rechner ohne Euro, Foto-Vorschau + Akte, 60-s-Uhr, reduzierte Bewegung).
 - 18.11.2026: Persönlicher Link per `?firma=Name` (wird in sessionStorage gemerkt).
+
+- 18.11.2026: Erste Fassung (Lampe + normale Abschnitte) von Eugen abgelehnt: zu simpel. Neues Design nach Konzeptwahl (Storyboards in konzepte/). Vorschläge immer als Storyboard zeigen.
 
 ## 10. Ablage
 Code: Dropbox/CLAUDE/Projekte/LICHTBOGEN · Repo: github.com/Engelstraenen/lichtbogen
