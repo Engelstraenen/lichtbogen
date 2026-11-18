@@ -57,7 +57,7 @@
   var hotX = innerWidth / 2, hotY = innerHeight / 2, p1 = 0, manualOff = false;
   var vid = $('#kvid'), vOK = false, playing = false;
   /* Zeiten im Film (Sekunden) und Lage des Hauptschalters im Bild am Anfang und beim Griff */
-  var TF = 2.3, TS = 5.45, TL = 6.7, RATE = 1.6, U0 = 0.44, V0 = 0.40, U1 = 0.445, V1 = 0.41;
+  var T0 = 1.7, TF = 3.5, TS = 5.45, TL = 6.7, RATE = 1.6, U0 = 0.44, V0 = 0.40, U1 = 0.445, V1 = 0.41;
   function seek(t) { if (!vOK || playing || vid.seeking) return; if (Math.abs(vid.currentTime - t) > 0.03) vid.currentTime = t; }
   function film() { root.classList.toggle('film', vOK && !manualOff); }
   if (vid && !reduce) {
@@ -69,7 +69,7 @@
   }
   function scene1() {
     p1 = prog(s1);
-    var W = kwrap.offsetWidth, H = kwrap.offsetHeight, k = ease((p1 - 0.14) / (vOK ? 0.5 : 0.58));
+    var W = kwrap.offsetWidth, H = kwrap.offsetHeight, k = ease((p1 - 0.05) / (vOK ? 0.47 : 0.58));
     var zm = vOK ? (innerWidth < 720 ? 2.0 : 1.8) : (innerWidth < 720 ? 2.0 : 2.5);
     var s = 1 + (zm - 1) * k, u = vOK ? U0 + (U1 - U0) * k : 0.44, v = vOK ? V0 + (V1 - V0) * k : 0.40;
     var ox = (u - 0.5) * W, oy = (v - 0.5) * H, tx = -ox * s * k, ty = -oy * s * k;
@@ -79,10 +79,10 @@
     kwrap.style.transform = 'translate(calc(-50% + ' + tx.toFixed(1) + 'px),calc(-50% + ' + ty.toFixed(1) + 'px)) scale(' + s.toFixed(4) + ')';
     hotX = innerWidth / 2 + ox * s + tx; hotY = innerHeight / 2 + oy * s + ty;
     hot.style.transform = 'translate(' + (ox * s + tx).toFixed(1) + 'px,' + (oy * s + ty).toFixed(1) + 'px)';
-    hot.classList.toggle('show', p1 > (vOK ? 0.6 : 0.74) && isOut() && !playing);
-    if (vOK) seek(isOut() ? k * TF : (vid.duration || 8) - 0.05);
+    hot.classList.toggle('show', p1 > (vOK ? 0.5 : 0.74) && isOut() && !playing);
+    if (vOK) seek(isOut() ? T0 + k * (TF - T0) : (vid.duration || 8) - 0.05);
     beats(beatSets[0], p1);
-    if (p1 > (vOK ? 0.72 : 0.94) && isOut() && !manualOff) power(true);
+    if (p1 > (vOK ? 0.6 : 0.94) && isOut() && !manualOff) power(true);
   }
 
   /* ---------- Taschenlampe ---------- */
