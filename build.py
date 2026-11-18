@@ -66,7 +66,7 @@ def emit(vdir, file, title, desc, body, scripts="", landing=False):
 </head>
 <body>
 <div class="demo"><div class="wrap"><span class="for">So könnte das für <span data-firma></span> aussehen.</span>
-<b>Demo von <a href="https://projektex.de/" rel="noopener">PROJEKT EX</a></b>, erfundene Firma, alle Personen, Zahlen und Stimmen sind Beispiele. · Testversion %(n)s von 3 · <a href="../">andere ansehen</a></div></div>
+<b>Demo von <a href="https://projektex.de/" rel="noopener">PROJEKT EX</a></b>, erfundene Firma, alle Personen, Zahlen und Stimmen sind Beispiele.%(tv)s</div></div>
 <header class="head">
 <div class="wrap head-in">
 <a class="logo" href="index.html" aria-label="LICHTBOGEN Startseite">%(logo)s<span>LICHTBOGEN<small>ELEKTROTECHNIK · DORTMUND</small></span></a>
@@ -94,7 +94,7 @@ def emit(vdir, file, title, desc, body, scripts="", landing=False):
 </body>
 </html>
 """ % dict(title=title, desc=desc, body=body, nav=nav, scripts=scripts.replace('src="assets/', 'src="../assets/'), call=CALL, tel=TEL,
-           n=v["n"], ver=VER, forced=forced, head_extra=head_extra, css=v["css"], js=js, light=light,
+           n=v["n"], tv=("" if vdir == "stromausfall" else ' · Testversion %s von 3 · <a href="../versionen.html">andere ansehen</a>' % v["n"]), ver=VER, forced=forced, head_extra=head_extra, css=v["css"], js=js, light=light,
            logo=I["logo"], sound=I["sound"], bulb=I["bulb"], phone=I["phone"], cam=I["cam"])
     (OUT / vdir).mkdir(exist_ok=True)
     # Cache-Stempel auch an Bilder und Filme, sonst zeigt der Browser alte Fassungen
@@ -363,11 +363,22 @@ for vdir, v in VARIANTS.items():
     if vdir in ("schaltschrank", "stromausfall"):
         extra = "\n<script>window.LB_SERVICES=%s;window.LB_VIZ=%s;</script>" % (
             landings.services_json(KREISE), landings.json.dumps(VIZ))
-    emit(vdir, "index.html", "LICHTBOGEN · %s (Demo)" % v["name"],
+    emit(vdir, "index.html", "LICHTBOGEN Elektrotechnik Dortmund (Demo)" if vdir == "stromausfall" else "LICHTBOGEN · %s (Demo)" % v["name"],
          "Demo von PROJEKT EX: Website für einen erfundenen Elektrobetrieb.", body, extra, landing=True)
     for f, t, d, b, sc in PAGES:
         emit(vdir, f, t, d, b, sc)
-(OUT / "index.html").write_text(landings.HUB, encoding="utf-8")
+# Hauptlink zeigt direkt die fertige Seite; die Übersicht der drei Testversionen liegt unter versionen.html
+(OUT / "versionen.html").write_text(landings.HUB, encoding="utf-8")
+(OUT / "index.html").write_text("""<!doctype html>
+<html lang="de"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>LICHTBOGEN Elektrotechnik Dortmund (Demo)</title>
+<meta name="description" content="Demo von PROJEKT EX: Website für einen erfundenen Elektrobetrieb.">
+<meta http-equiv="refresh" content="0; url=stromausfall/">
+<link rel="canonical" href="stromausfall/">
+<script>location.replace('stromausfall/' + location.search + location.hash);</script>
+<style>body{margin:0;background:#070a12;color:#fff;font:16px system-ui;display:grid;place-items:center;min-height:100vh}a{color:#ffb347}</style>
+</head><body><p><a href="stromausfall/">Weiter zur Seite</a></p></body></html>
+""", encoding="utf-8")
 for old in ("rechner.html", "foto-check.html", "jobs.html"):
     p = OUT / old
     if p.exists():
