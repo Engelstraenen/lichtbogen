@@ -135,19 +135,19 @@
     var a = waveA = wave.animate([{ transform: 'translate(-3%,-14vh)' }, { transform: 'translate(3%,112vh)' }], { duration: 1700, delay: 60, easing: 'cubic-bezier(.45,0,.2,1)', fill: 'both' });
     waveIv = setInterval(function () {
       var p = a.effect && a.effect.getComputedTiming ? (a.effect.getComputedTiming().progress || 0) : 0, ey = -0.14 * H + p * 1.26 * H + 60;
-      if (ey > 0 && ey < H + 40) FX.spark(Math.random() * W, ey + (Math.random() - 0.5) * 50, 7, '#ffd166');
-    }, 70);
+      if (ey > 0 && ey < H + 40) FX.spark(Math.random() * W, ey + (Math.random() - 0.5) * 50, 4, '#ffd166');
+    }, 95);
     a.onfinish = function () { stopWave(); };
   }
   function burst(bx, by) {
     var W = innerWidth, H = innerHeight;
-    for (var i = 0; i < 6; i++) FX.bolt(bx, by, bx + (Math.random() - 0.5) * W * 0.9, by - Math.random() * H * 0.6, { life: 260 + Math.random() * 260, w: 3 });
-    FX.spark(bx, by, 46, '#d6e9ff');
+    for (var i = 0; i < 4; i++) FX.bolt(bx, by, bx + (Math.random() - 0.5) * W * 0.9, by - Math.random() * H * 0.6, { life: 240 + Math.random() * 220, w: 3 });
+    FX.spark(bx, by, 26, '#d6e9ff');
   }
   /* Funke am Schalter, in dem Moment, in dem die Hand den Hebel umlegt */
   function spark1() {
     flash.classList.remove('go'); void flash.offsetWidth; flash.classList.add('go');
-    burst(hotX, hotY); setTimeout(function () { burst(hotX, hotY); }, 200);
+    burst(hotX, hotY);
   }
   function wantLit() { return override ? override === 'on' : p1 >= PL; }
   function applyLight() {
