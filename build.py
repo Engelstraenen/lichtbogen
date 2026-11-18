@@ -183,6 +183,16 @@ RECHNER = """
 </div>
 
 <div class="calc" id="p-wb" role="tabpanel" aria-labelledby="t-wb">
+<div class="viz" id="viz-wb" aria-hidden="true">
+<img class="viz-bg" src="../assets/img/wallbox.jpg" alt="">
+<img class="viz-on" id="wb-on" src="../assets/img/wallbox-an.jpg" alt="">
+<svg class="viz-svg" viewBox="0 0 1600 900" preserveAspectRatio="xMidYMid slice">
+<path class="cab cab-glow" id="wb-c1" d="M0 0"/><path class="cab cab-core" id="wb-c2" d="M0 0"/><path class="cab cab-pulse" id="wb-c3" d="M0 0"/>
+</svg>
+<div class="hud hud-a"><div class="hbat"><i id="wb-fill"></i></div><b id="wb-hud-night">–</b><span>über Nacht im Akku</span></div>
+<div class="hud hud-b"><b id="wb-hud-kmh">–</b><span>Reichweite je Stunde Laden</span></div>
+<div class="hud hud-c"><b id="wb-hud-kw">–</b><span>Ladeleistung</span></div>
+</div>
 <div class="card">
 %(wb_km)s%(wb_v)s%(wb_akku)s%(wb_home)s%(wb_kw)s
 </div>
@@ -207,6 +217,19 @@ RECHNER = """
 </div>
 
 <div class="calc" id="p-pv" role="tabpanel" aria-labelledby="t-pv" hidden>
+<div class="viz" id="viz-pv" aria-hidden="true">
+<img class="viz-bg" src="../assets/img/haus.jpg" alt="">
+<img class="viz-lay" id="pv-lit" src="../assets/img/haus-pv.jpg" alt="">
+<img class="viz-lay" id="pv-roof" src="../assets/img/haus-pv.jpg" alt="">
+<div class="viz-sun" id="pv-sun"></div>
+<svg class="viz-svg" viewBox="0 0 1600 900" preserveAspectRatio="xMidYMid slice">
+<path class="flow" id="pv-f1" d="M0 0"/><path class="flow" id="pv-f2" d="M0 0"/><path class="flow" id="pv-f3" d="M0 0"/>
+</svg>
+<div class="chip" id="pv-chip-bat"><i></i><b>Speicher</b></div>
+<div class="chip" id="pv-chip-car"><b>E-Auto lädt mit</b></div>
+<div class="hud hud-a"><b id="pv-hud-kwp">–</b><span id="pv-hud-mod">Module</span></div>
+<div class="hud hud-ring"><svg viewBox="0 0 120 120"><circle class="r-bg" cx="60" cy="60" r="48"/><circle class="r-fg" id="pv-ring" cx="60" cy="60" r="48" pathLength="100"/></svg><b id="pv-hud-aut">–</b><span>deckt das Dach</span></div>
+</div>
 <div class="card">
 %(pv_area)s%(pv_dir)s%(pv_use)s%(pv_bat)s%(pv_car)s
 </div>

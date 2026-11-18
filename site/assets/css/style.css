@@ -346,3 +346,34 @@ details li{margin:4px 0}
 .soc-i{width:42px;height:42px;border-radius:50%;border:1px solid var(--line);background:none;color:inherit;display:grid;place-items:center;cursor:pointer;transition:transform .2s,border-color .2s,color .2s}
 .soc-i svg{width:20px;height:20px}
 .soc-i:hover{transform:translateY(-3px);border-color:var(--accent);color:var(--accent)}
+
+/* Rechner: Szene, die auf jeden Regler reagiert */
+.viz{position:relative;grid-column:1/-1;aspect-ratio:16/9;border-radius:22px;overflow:hidden;background:#0a1020;container-type:inline-size;isolation:isolate;box-shadow:0 24px 60px rgba(0,0,0,.35)}
+.viz img{position:absolute;inset:0;width:100%;height:100%;max-width:none;object-fit:cover}
+.viz-on,.viz-lay{opacity:0;transition:opacity .6s ease}
+.viz-lay{transition:opacity .6s ease,clip-path .5s cubic-bezier(.2,.8,.2,1)}
+.viz-svg{position:absolute;inset:0;width:100%;height:100%;overflow:visible}
+.cab{fill:none;stroke-linecap:round;stroke-linejoin:round}
+.cab-glow{stroke:#ffb347;stroke-width:calc(var(--th,7)*3.2px);opacity:calc(var(--pw,.5)*.28);filter:blur(6px)}
+.cab-core{stroke:#ffb347;stroke-width:calc(var(--th,7)*.55px);opacity:calc(.25 + var(--pw,.5)*.5)}
+.cab-pulse{stroke:#fff3cf;stroke-width:calc(var(--th,7)*1px);stroke-dasharray:var(--dash,60) var(--gap,150);animation:cabflow var(--spd,1.3s) linear infinite;filter:drop-shadow(0 0 6px #ffb347)}
+@keyframes cabflow{from{stroke-dashoffset:var(--tot,210)}to{stroke-dashoffset:0}}
+.hud{position:absolute;padding:1.6cqw 2cqw;border-radius:2cqw;background:rgba(7,10,18,.72);border:1px solid rgba(255,255,255,.14);color:#fff;-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);display:grid;gap:.5cqw;min-width:17cqw}
+.hud b{font:800 3.6cqw/1 var(--head,inherit);letter-spacing:-.03em;font-variant-numeric:tabular-nums}
+.hud span{font-size:1.55cqw;color:#c9cfdb;line-height:1.2}
+.hud-a{left:3cqw;top:3cqw}.hud-b{right:3cqw;top:3cqw}.hud-c{right:3cqw;bottom:3cqw}
+.hbat{position:relative;height:3.2cqw;border-radius:.9cqw;border:.35cqw solid #fff;padding:.35cqw;margin:0 1cqw .4cqw 0}
+.hbat::after{content:"";position:absolute;right:-1.3cqw;top:25%;width:.8cqw;height:50%;border-radius:0 .4cqw .4cqw 0;background:#fff}
+.hbat i{display:block;height:100%;width:var(--fill,50%);border-radius:.4cqw;background:var(--bc,#ffb347);box-shadow:0 0 2cqw var(--bc,#ffb347);transition:width .5s cubic-bezier(.2,.8,.2,1),background .3s}
+.viz-sun{position:absolute;left:var(--sx,50%);top:-18%;width:70cqw;height:70cqw;margin-left:-35cqw;border-radius:50%;pointer-events:none;background:radial-gradient(circle,rgba(255,200,110,.55),rgba(255,200,110,0) 62%);opacity:var(--so,.5);transition:left .7s cubic-bezier(.2,.8,.2,1),opacity .5s;mix-blend-mode:screen}
+.flow{fill:none;stroke:#ffcf6b;stroke-width:6;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:14 26;opacity:var(--fo,0);animation:cabflow var(--fs,1.2s) linear infinite;--tot:40;filter:drop-shadow(0 0 7px #ffb347);transition:opacity .4s}
+.chip{position:absolute;display:flex;align-items:center;gap:1cqw;padding:1cqw 1.6cqw;border-radius:99px;background:rgba(7,10,18,.78);border:1px solid rgba(255,179,71,.6);color:#fff;font-size:1.7cqw;opacity:0;scale:.7;transition:opacity .35s,scale .45s cubic-bezier(.2,1.5,.4,1);white-space:nowrap}
+.chip.on{opacity:1;scale:1}
+.chip i{width:3.2cqw;height:1.6cqw;border-radius:.4cqw;border:.25cqw solid #fff;background:linear-gradient(90deg,#3ddc6a var(--bf,50%),transparent 0)}
+.hud-ring{right:3cqw;bottom:3cqw;justify-items:center;text-align:center;min-width:0;padding:1.6cqw}
+.hud-ring svg{width:13cqw;height:13cqw;rotate:-90deg}
+.hud-ring b{position:absolute;top:1.6cqw;left:0;right:0;height:13cqw;display:grid;place-items:center;font-size:3.3cqw}
+.r-bg{fill:none;stroke:rgba(255,179,71,.2);stroke-width:12}
+.r-fg{fill:none;stroke:#ffb347;stroke-width:12;stroke-linecap:round;stroke-dasharray:100;stroke-dashoffset:calc(100 - var(--rv,50));transition:stroke-dashoffset .6s cubic-bezier(.2,.8,.2,1)}
+@media (max-width:719px){.viz{aspect-ratio:4/3;border-radius:16px}.hud b{font-size:5.4cqw}.hud span{font-size:2.6cqw}.hud{padding:2.2cqw 2.6cqw;min-width:0}.hud-c{display:none}.hbat{height:4.6cqw}.chip{font-size:2.8cqw}.hud-ring svg,.hud-ring b{width:19cqw;height:19cqw}.hud-ring b{width:auto;font-size:4.6cqw}}
+@media (prefers-reduced-motion:reduce){.cab-pulse,.flow{animation:none}}
