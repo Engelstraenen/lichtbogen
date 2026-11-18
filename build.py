@@ -16,22 +16,37 @@ I = {
     "check": '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.200" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12.500l5 5L20 6.500"/></svg>',
 }
 
-LAMP = """<div class="lamp" aria-hidden="false"><div class="lamp-swing">
-<svg viewBox="0 0 120 170" aria-hidden="true"><defs><radialGradient id="hg"><stop offset="0" stop-color="#ffe7a0" stop-opacity=".95"/><stop offset="1" stop-color="#ffc84a" stop-opacity="0"/></radialGradient></defs>
-<line class="cable" x1="60" y1="0" x2="60" y2="96"/><circle class="halo" cx="60" cy="150" r="46" fill="url(#hg)"/><circle class="bulb" cx="60" cy="146" r="12"/><path class="shade" d="M24 146C24 112 42 94 60 94s36 18 36 52z"/><path class="rim" d="M24 146h72"/></svg>
-<div class="cone"></div>
-<button class="cord" type="button" aria-label="Zugschnur: Licht umschalten"><span class="cord-line"></span><span class="cord-knob"></span><span class="cord-hint">Zieh mal</span></button>
-</div></div>"""
+LAMP = ""
 
-NAV = [("index.html", "Leistungen"), ("rechner.html", "Rechner"), ("foto-check.html", "Foto-Check"), ("jobs.html", "Jobs")]
+NAV = [("index.html", "Start"), ("rechner.html", "Rechner"), ("foto-check.html", "Foto-Check"), ("jobs.html", "Jobs")]
+
+
+VARIANTS = {
+    "haus": dict(n=1, name="Das Haus unter Strom", theme=None, css="v1.css", js=["v1.js"]),
+    "schaltschrank": dict(n=2, name="Der Sicherungskasten", theme="dark", css="v2.css", js=["fx.js", "v2.js"]),
+    "stromausfall": dict(n=3, name="Stromausfall", theme="light", css="v3.css", js=["fx.js", "v3.js"]),
+}
+PAGES = []
 
 
 def page(file, title, desc, body, scripts=""):
+    """Unterseiten merken; sie werden für jede Testversion ausgegeben."""
+    PAGES.append((file, title, desc, body, scripts))
+
+
+def emit(vdir, file, title, desc, body, scripts="", landing=False):
+    v = VARIANTS[vdir]
     nav = "".join(
         '<a href="%s"%s>%s</a>' % (h, ' aria-current="page"' if h == file else "", t) for h, t in NAV
     )
+    forced = "'%s'" % v["theme"] if v["theme"] else "null"
+    head_extra = ""
+    if vdir == "stromausfall" and landing:
+        head_extra = "<script>try{if(!sessionStorage.getItem('lb3-power')){var d=document.documentElement;d.setAttribute('data-theme','dark');d.classList.add('out')}}catch(e){}</script>"
+    light = ('<button class="tool" type="button" data-light aria-pressed="true" aria-label="Licht ausschalten">%s</button>' % I["bulb"]) if not v["theme"] else ""
+    js = "".join('\n<script src="../assets/js/%s" defer></script>' % j for j in v["js"] if landing or j == "fx.js")
     html = """<!doctype html>
-<html lang="de" data-theme="light">
+<html lang="de" data-theme="light" data-v="%(n)s">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
@@ -40,20 +55,21 @@ def page(file, title, desc, body, scripts=""):
 <meta name="robots" content="noindex">
 <meta name="theme-color" content="#f4efe6">
 <link rel="icon" href="data:image/svg+xml,%%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%%3E%%3Crect width='32' height='32' rx='7' fill='%%23080a0f'/%%3E%%3Cpath d='M6 23a10 10 0 0 1 20 0' fill='none' stroke='%%23ffc83d' stroke-width='3' stroke-linecap='round'/%%3E%%3Ccircle cx='16' cy='23' r='2.500' fill='%%23ffc83d'/%%3E%%3C/svg%%3E">
-<script>(function(){var t;try{t=localStorage.getItem('lb-theme')}catch(e){}if(!t)t=matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light';document.documentElement.setAttribute('data-theme',t)})()</script>
-<link rel="preload" href="assets/fonts/grotesk.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="stylesheet" href="assets/css/style.css">
+<script>(function(){var F=%(forced)s,t=F;if(!t){try{t=localStorage.getItem('lb-theme')}catch(e){}}if(!t)t=matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light';document.documentElement.setAttribute('data-theme',t)})()</script>%(head_extra)s
+<link rel="preload" href="../assets/fonts/grotesk.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="../assets/css/style.css">
+<link rel="stylesheet" href="../assets/css/%(css)s">
 </head>
 <body>
 <div class="demo"><div class="wrap"><span class="for">So könnte das für <span data-firma></span> aussehen.</span>
-<b>Demo von <a href="https://projektex.de/" rel="noopener">PROJEKT EX</a></b>, erfundene Firma, alle Personen, Zahlen und Stimmen sind Beispiele.</div></div>
+<b>Demo von <a href="https://projektex.de/" rel="noopener">PROJEKT EX</a></b>, erfundene Firma, alle Personen, Zahlen und Stimmen sind Beispiele. · Testversion %(n)s von 3 · <a href="../">andere ansehen</a></div></div>
 <header class="head">
 <div class="wrap head-in">
 <a class="logo" href="index.html" aria-label="LICHTBOGEN Startseite">%(logo)s<span>LICHTBOGEN<small>ELEKTROTECHNIK · DORTMUND</small></span></a>
 <nav class="nav" aria-label="Hauptmenü">%(nav)s</nav>
 <div class="head-tools">
 <button class="tool" type="button" data-sound aria-pressed="false" aria-label="Schalter-Klick an oder aus">%(sound)s</button>
-<button class="tool" type="button" data-light aria-pressed="true" aria-label="Licht ausschalten">%(bulb)s</button>
+%(light)s
 <a class="btn btn--sm" %(call)s>%(phone)s %(tel)s</a>
 </div>
 </div>
@@ -70,13 +86,15 @@ def page(file, title, desc, body, scripts=""):
 <p style="margin-top:10px">Weitere Demos: <a href="https://projektex.de/referenzen/warmherz/" rel="noopener">WARMHERZ</a> · <a href="https://projektex.de/referenzen/werkakte-app/" rel="noopener">Werkakte-App</a></p></div>
 </div></footer>
 <div class="bar"><a class="btn" %(call)s>%(phone)s Anrufen</a><a class="btn btn--ghost" href="foto-check.html">%(cam)s Foto-Check</a></div>
-<script src="assets/js/app.js" defer></script>%(scripts)s
+<script src="../assets/js/app.js" defer></script>%(js)s%(scripts)s
 </body>
 </html>
-""" % dict(title=title, desc=desc, body=body, nav=nav, scripts=scripts, call=CALL, tel=TEL,
+""" % dict(title=title, desc=desc, body=body, nav=nav, scripts=scripts.replace('src="assets/', 'src="../assets/'), call=CALL, tel=TEL,
+           n=v["n"], forced=forced, head_extra=head_extra, css=v["css"], js=js, light=light,
            logo=I["logo"], sound=I["sound"], bulb=I["bulb"], phone=I["phone"], cam=I["cam"])
-    (OUT / file).write_text(html, encoding="utf-8")
-    print("ok", file, len(html))
+    (OUT / vdir).mkdir(exist_ok=True)
+    (OUT / vdir / file).write_text(html, encoding="utf-8")
+    print("ok", vdir, file, len(html))
 
 
 # ------------------------------------------------------------------ Startseite
@@ -130,73 +148,6 @@ for n, (key, name, head, text, pts, link) in enumerate(KREISE, 1):
 <div class="card viz">%s</div></div></article>""" % (" kreis--not" if key == "not" else "", n, n, n, name, head, text, lis, cta, VIZ[key])
     box += '<a href="#f%d"><i></i>F%d %s</a>' % (n, n, name)
 
-HOME = """
-<section class="hero"><div class="wrap">
-%(lamp)s
-<div class="hero-in">
-<p class="eyebrow hero-top"><span class="only-light">Meisterbetrieb in Dortmund</span><span class="only-dark">Notdienst · Tag und Nacht</span></p>
-<h1 class="only-light">Elektrik, die beim <em>ersten Mal</em> sitzt.</h1>
-<h1 class="only-dark">Strom weg? <em>Wir kommen.</em></h1>
-<p class="lead only-light">Wallbox, Solaranlage, Smart Home und Sanierung. Acht Leute, ein fester Ansprechpartner und ein Rückruf noch am selben Werktag.</p>
-<p class="lead only-dark">Sicherung fliegt, Haus dunkel, Herd tot? Ruf an. Wir sagen dir am Telefon, was du sofort tun kannst, und fahren los.</p>
-<div class="btn-row">
-<a class="btn" %(call)s>%(phone)s <span class="only-light">Anrufen</span><span class="only-dark">Notdienst</span> %(tel)s</a>
-<a class="btn btn--ghost" href="foto-check.html">%(cam)s 3 Fotos schicken</a>
-</div>
-<p class="hero-note">Tipp: Zieh oben an der Schnur. Im Dunkeln siehst du, wo bei uns der Strom fließt.</p>
-<div class="facts">
-<div><b>8</b><span>Leute im Team</span></div>
-<div><b>2009</b><span>gegründet</span></div>
-<div><b>1 Tag</b><span>bis zum Rückruf</span></div>
-<div><b>24/7</b><span>Notdienst</span></div>
-</div>
-</div></div></section>
-
-<section id="leistungen" style="padding-bottom:0"><div class="wrap">
-<div class="sec-head"><p class="eyebrow">Leistungen</p><h2>Sechs Stromkreise.<br>Einer davon ist deiner.</h2>
-<p class="lead">Scroll weiter. Die Leitung versorgt einen Abschnitt nach dem anderen, und die Sicherung klappt um.</p></div>
-<div class="circuit"><div class="wire"></div><div class="wire-live"></div><div class="spark"></div>
-%(kreise)s
-</div></div></section>
-<nav class="panelbox" aria-label="Sicherungskasten">%(box)s</nav>
-
-<section class="band"><div class="wrap">
-<div class="sec-head"><p class="eyebrow">So läuft es ab</p><h2>Drei Schritte bis zum Termin.</h2></div>
-<div class="grid3">
-<div class="card step rv"><b>1</b><h3>Fotos schicken</h3><p class="muted" style="margin-top:8px">Zählerschrank, Problemstelle, Raum. Dauert zwei Minuten und spart die erste Anfahrt.</p></div>
-<div class="card step rv"><b>2</b><h3>Rückruf vom Meister</h3><p class="muted" style="margin-top:8px">Wir haben deine Fotos schon gesehen, wenn wir anrufen. Kein Erklären am Telefon.</p></div>
-<div class="card step rv"><b>3</b><h3>Fester Termin</h3><p class="muted" style="margin-top:8px">Du bekommst einen Tag und eine Uhrzeit. Und jemanden, der dann auch da ist.</p></div>
-</div></div></section>
-
-<section><div class="wrap">
-<div class="sec-head"><p class="eyebrow">Stimmen</p><h2>Was Kunden sagen.</h2></div>
-<div class="grid3">
-<blockquote class="card quote rv" style="margin:0"><p>„Foto vom Zählerschrank geschickt, am Nachmittag kam der Anruf. Zwei Wochen später hing die Wallbox.“</p><footer><span class="ava">MK</span><span>Familie K., Hombruch<br><span class="tag">Beispiel-Stimme</span></span></footer></blockquote>
-<blockquote class="card quote rv" style="margin:0"><p>„Nachts um zwei war der Keller dunkel. Um drei lief die Heizung wieder. Mehr muss ich nicht sagen.“</p><footer><span class="ava">RS</span><span>Rainer S., Aplerbeck<br><span class="tag">Beispiel-Stimme</span></span></footer></blockquote>
-<blockquote class="card quote rv" style="margin:0"><p>„Altbau von 1958, alles neu, und wir haben die ganze Zeit drin gewohnt. Sauber und pünktlich.“</p><footer><span class="ava">LT</span><span>Lena T., Kreuzviertel<br><span class="tag">Beispiel-Stimme</span></span></footer></blockquote>
-</div></div></section>
-
-<section class="band"><div class="wrap">
-<div class="sec-head"><p class="eyebrow">Wer kommt</p><h2>Inhabergeführt. Du kennst uns beim Namen.</h2></div>
-<div class="team">
-<div class="card person rv"><span class="ava">JB</span><div><b>Jonas Brandt</b><small>Elektromeister und Inhaber</small></div></div>
-<div class="card person rv"><span class="ava">AY</span><div><b>Aylin Yıldız</b><small>Planung PV und Speicher</small></div></div>
-<div class="card person rv"><span class="ava">TW</span><div><b>Tom Wieczorek</b><small>Bauleitung Sanierung</small></div></div>
-<div class="card person rv"><span class="ava">+5</span><div><b>Fünf weitere Kollegen</b><small>Gesellen, Azubi und Büro</small></div></div>
-</div></div></section>
-
-<section><div class="wrap">
-<div class="sec-head"><p class="eyebrow">Direkt loslegen</p><h2>Such dir den kürzesten Weg aus.</h2></div>
-<div class="grid3">
-<a class="card tease rv" href="rechner.html"><div><p class="eyebrow">Rechner</p><h3 style="margin-top:10px">Wallbox und PV grob einschätzen</h3></div><span class="go">Zum Rechner →</span></a>
-<a class="card tease rv" href="foto-check.html"><div><p class="eyebrow">Foto-Check</p><h3 style="margin-top:10px">3 Fotos schicken, Rückruf bekommen</h3></div><span class="go">Fotos machen →</span></a>
-<a class="card tease rv" href="jobs.html"><div><p class="eyebrow">Jobs</p><h3 style="margin-top:10px">Elektroniker gesucht. Bewerben in 60 Sekunden</h3></div><span class="go">Zu den Jobs →</span></a>
-</div></div></section>
-""" % dict(lamp=LAMP, call=CALL, phone=I["phone"], tel=TEL, cam=I["cam"], kreise=kreise_html, box=box)
-
-page("index.html", "LICHTBOGEN · Elektrotechnik in Dortmund (Demo)",
-     "Demo von PROJEKT EX: Website für einen erfundenen Elektrobetrieb. Wallbox, PV, Smart Home, E-Check, Sanierung, Notdienst.", HOME)
-
 # ------------------------------------------------------------------ Rechner
 def rng(id, label, mn, mx, step, val, unit):
     return ('<div class="field"><label for="%s">%s <output id="%s-o"></output></label>'
@@ -211,7 +162,7 @@ def seg(name, label, opts, checked):
 
 
 RECHNER = """
-<section class="hero hero--sub"><div class="wrap">%(lamp)s<div class="hero-in">
+<section class="hero hero--sub"><div class="wrap"><div class="hero-in">
 <p class="eyebrow hero-top">Rechner</p>
 <h1>Lohnt sich das <em>bei mir?</em></h1>
 <p class="lead">Ein paar Regler, eine grobe Einschätzung. Ohne Anmeldung und ohne Euro-Versprechen. Die genaue Planung machen wir bei dir vor Ort.</p>
@@ -297,7 +248,7 @@ chips = "".join('<label><input type="radio" name="thema" value="%s"><span>%s</sp
                 for t in ["Wallbox", "PV und Speicher", "Sicherung fliegt raus", "Sanierung", "Smart Home", "Etwas anderes"])
 
 FOTO = """
-<section class="hero hero--sub"><div class="wrap">%(lamp)s<div class="hero-in">
+<section class="hero hero--sub"><div class="wrap"><div class="hero-in">
 <p class="eyebrow hero-top">Foto-Check</p>
 <h1>Drei Fotos statt <em>drei Telefonate.</em></h1>
 <p class="lead">Fotografier Zählerschrank und Problemstelle. Die Bilder landen direkt als Akte in der Werkakte-App, und der Meister ruft vorbereitet zurück.</p>
@@ -350,7 +301,7 @@ def q(name, kind, opts):
 
 
 JOBS = """
-<section class="hero hero--sub"><div class="wrap">%(lamp)s<div class="hero-in">
+<section class="hero hero--sub"><div class="wrap"><div class="hero-in">
 <p class="eyebrow hero-top">Jobs</p>
 <h1>Wir suchen <em>Elektroniker.</em></h1>
 <p class="lead">Energie- und Gebäudetechnik (m/w/d), Geselle oder Meister. Acht Leute, kurze Wege, Baustellen im Umkreis. Bewerben dauert bei uns 60 Sekunden, ohne Lebenslauf.</p>
@@ -394,3 +345,23 @@ JOBS = """
 page("jobs.html", "Jobs: Elektroniker gesucht · LICHTBOGEN (Demo)",
      "Bewerben in 60 Sekunden. Demo von PROJEKT EX.", JOBS,
      '\n<script src="assets/js/pages.js" defer></script>')
+
+# ------------------------------------------------------------------ Ausgabe: drei Testversionen
+import landings
+
+LAND = {"haus": landings.v1, "schaltschrank": landings.v2, "stromausfall": landings.v3}
+for vdir, v in VARIANTS.items():
+    body = LAND[vdir](KREISE, VIZ, CALL, TEL, I)
+    extra = ""
+    if vdir == "schaltschrank":
+        extra = "\n<script>window.LB_SERVICES=%s;window.LB_VIZ=%s;</script>" % (
+            landings.services_json(KREISE), landings.json.dumps(VIZ))
+    emit(vdir, "index.html", "LICHTBOGEN · %s (Demo)" % v["name"],
+         "Demo von PROJEKT EX: Website für einen erfundenen Elektrobetrieb.", body, extra, landing=True)
+    for f, t, d, b, sc in PAGES:
+        emit(vdir, f, t, d, b, sc)
+(OUT / "index.html").write_text(landings.HUB, encoding="utf-8")
+for old in ("rechner.html", "foto-check.html", "jobs.html"):
+    p = OUT / old
+    if p.exists():
+        p.unlink()

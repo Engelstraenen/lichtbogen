@@ -22,7 +22,7 @@ gh (Account Engelstraenen) vorhanden. projektex.de-Upload: nur nach OK.
 build.py ändern → `python3 build.py` → lokal prüfen → commit → gh-pages aktualisieren.
 
 ## 7. Befehle
-- Bauen: `python3 build.py` (erzeugt site/*.html; CSS/JS liegen direkt in site/assets/)
+- Bauen: `python3 build.py` (erzeugt site/<version>/*.html aus build.py + landings.py; CSS/JS liegen in site/assets/)
 - Vorschau: `cd site && python3 -m http.server 4350`
 - Veröffentlichen: `git push origin main && git push -f origin $(git subtree split --prefix site main):refs/heads/gh-pages`
 
@@ -36,6 +36,8 @@ build.py ändern → `python3 build.py` → lokal prüfen → commit → gh-page
 - 18.11.2026: Persönlicher Link per `?firma=Name` (wird in sessionStorage gemerkt).
 
 - 18.11.2026: Erste Fassung (Lampe + normale Abschnitte) von Eugen abgelehnt: zu simpel. Neues Design nach Konzeptwahl (Storyboards in konzepte/). Vorschläge immer als Storyboard zeigen.
+
+- 18.11.2026: Drei Testversionen gebaut (stromausfall/, schaltschrank/, haus/). Eugens Favorit: 3 Stromausfall; Leitmotiv = durchgetrenntes Kabel, über das der Strom springt.
 
 ## 10. Ablage
 Code: Dropbox/CLAUDE/Projekte/LICHTBOGEN · Repo: github.com/Engelstraenen/lichtbogen

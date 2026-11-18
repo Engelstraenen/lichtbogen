@@ -335,3 +335,8 @@ details li{margin:4px 0}
   .rv,.kreis-in{opacity:1;transform:none;filter:none}
   .spark{display:none}
 }
+
+/* Unterseiten ohne Lampe */
+.hero--sub{padding:52px 0 22px}
+.hero--sub .hero-top{position:static;margin-bottom:16px}
+.fx{position:fixed;inset:0;width:100%;height:100%;z-index:85;pointer-events:none}
