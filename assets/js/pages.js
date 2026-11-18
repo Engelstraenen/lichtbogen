@@ -32,6 +32,45 @@
       var m = Math.round(h * 60), H = Math.floor(m / 60), M = m % 60;
       return H ? H + ' h' + (M ? ' ' + M + ' min' : '') : M + ' min';
     };
+    /* ---------- Szenen zum Rechner: jede Zahl bewegt etwas im Bild ---------- */
+    /* Lage im Bild (Raster 1600 x 900): Ladekabel, Dachfläche, Hauskörper, Energiewege */
+    var GEO = {
+      cable: 'M420 430 C 430 700, 620 760, 760 690 S 900 520, 930 470',
+      roof: [[30, 20], [70, 20], [80, 48], [22, 48]],          /* links oben, rechts oben, rechts unten, links unten, in Prozent */
+      body: [[20, 48], [82, 48], [82, 86], [20, 86]],
+      f1: 'M800 430 L800 560', f2: 'M800 560 L1080 560 L1080 640', f3: 'M1080 640 L1250 640 L1250 700',
+      bat: [64, 66], car: [74, 78]
+    };
+    if (window.LB_GEO) for (var gk in window.LB_GEO) GEO[gk] = window.LB_GEO[gk];
+    var sv = function (id, k, v) { var e = $('#' + id); if (e) e.style.setProperty(k, v); };
+    var setD = function (ids, d) { ids.forEach(function (id) { var e = $('#' + id); if (e) e.setAttribute('d', d); }); };
+    setD(['wb-c1', 'wb-c2', 'wb-c3'], GEO.cable); setD(['pv-f1'], GEO.f1); setD(['pv-f2'], GEO.f2); setD(['pv-f3'], GEO.f3);
+    var poly = function (pts) { return 'polygon(' + pts.map(function (q) { return q[0].toFixed(2) + '% ' + q[1].toFixed(2) + '%'; }).join(',') + ')'; };
+    var place = function (id, q) { var e = $('#' + id); if (e) { e.style.left = q[0] + '%'; e.style.top = q[1] + '%'; } };
+    place('pv-chip-bat', GEO.bat); place('pv-chip-car', GEO.car);
+    var vizWb = function (kw, night, kmh) {
+      var k = kw < 5 ? 0 : kw < 20 ? 1 : 2;
+      sv('viz-wb', '--spd', [2.6, 1.15, 0.5][k] + 's'); sv('viz-wb', '--th', [5, 8, 12][k]); sv('viz-wb', '--pw', [0.3, 0.65, 1][k]);
+      sv('viz-wb', '--dash', [26, 60, 110][k]); sv('viz-wb', '--gap', [190, 150, 100][k]); sv('viz-wb', '--tot', [216, 210, 210][k]);
+      sv('wb-fill', '--fill', Math.max(6, Math.round(night * 100)) + '%'); sv('wb-fill', '--bc', night >= 1 ? '#3ddc6a' : '#ffb347');
+      var on = $('#wb-on'); if (on) on.style.opacity = [0, 0.45, 1][k];
+      txt('wb-hud-night', night >= 1 ? 'voll' : nf(night * 100) + ' %'); txt('wb-hud-kmh', '+' + nf(kmh) + ' km'); txt('wb-hud-kw', nf(kw, kw < 5 ? 1 : 0) + ' kW');
+    };
+    var vizPv = function (area, f, self, aut, bat, car, kwp) {
+      var t = Math.max(0.1, Math.min(1, (area - 10) / 110)), R = GEO.roof;
+      var top = [R[0][0] + (R[1][0] - R[0][0]) * t, R[0][1] + (R[1][1] - R[0][1]) * t], bot = [R[3][0] + (R[2][0] - R[3][0]) * t, R[3][1] + (R[2][1] - R[3][1]) * t];
+      var roof = $('#pv-roof'); if (roof) { roof.style.clipPath = poly([R[0], top, bot, R[3]]); roof.style.opacity = 1; }
+      var lit = $('#pv-lit'); if (lit) { lit.style.clipPath = poly(GEO.body); lit.style.opacity = Math.min(1, 0.15 + aut * 1.05).toFixed(2); }
+      sv('pv-sun', '--sx', f > 0.9 ? '50%' : f > 0.7 ? '80%' : '12%'); sv('pv-sun', '--so', f > 0.9 ? 0.75 : f > 0.7 ? 0.5 : 0.16);
+      var str = Math.min(1, kwp * f / 14), fs = (1.7 - 1.2 * str).toFixed(2) + 's';
+      sv('pv-f1', '--fo', (0.35 + 0.65 * str).toFixed(2)); sv('pv-f1', '--fs', fs);
+      sv('pv-f2', '--fo', bat > 0 ? (0.35 + 0.65 * str).toFixed(2) : 0); sv('pv-f2', '--fs', fs);
+      sv('pv-f3', '--fo', car ? (0.35 + 0.65 * str).toFixed(2) : 0); sv('pv-f3', '--fs', fs);
+      var cb = $('#pv-chip-bat'); if (cb) { cb.classList.toggle('on', bat > 0); cb.querySelector('b').textContent = 'Speicher ' + nf(bat) + ' kWh'; cb.querySelector('i').style.setProperty('--bf', Math.round(40 + 55 * str) + '%'); }
+      var cc = $('#pv-chip-car'); if (cc) cc.classList.toggle('on', car);
+      txt('pv-hud-kwp', nf(kwp, 1) + ' kWp'); txt('pv-hud-mod', 'ca. ' + Math.round(kwp / 0.43) + ' Module');
+      sv('pv-ring', '--rv', Math.round(aut * 100)); txt('pv-hud-aut', Math.round(aut * 100 / 5) * 5 + ' %');
+    };
     var wallbox = function () {
       var km = val('wb-km'), v = val('wb-v'), akku = val('wb-akku'), home = val('wb-home') / 100, kw = parseFloat(radio('wb-kw'));
       var loss = 1.1;
@@ -48,6 +87,7 @@
       else if (kw < 20) t = '11 kW passt für die meisten Haushalte: über Nacht ist der Akku voll, und der Hausanschluss kommt in der Regel gut damit klar.';
       else t = '22 kW lädt schnell, aber nur, wenn Auto und Hausanschluss das mitmachen. Das klären wir mit einem Blick in deinen Zählerschrank.';
       txt('wb-verdict', t);
+      vizWb(kw, night, kw / v * 100);
     };
     var pv = function () {
       var area = val('pv-area'), f = parseFloat(radio('pv-dir')), use = val('pv-use'), bat = parseFloat(radio('pv-bat')), car = radio('pv-car') === '1';
@@ -75,6 +115,7 @@
       else t = 'Dach und Verbrauch passen gut zusammen. Die genaue Größe von Anlage und Speicher legen wir nach deinem Tagesablauf fest.';
       if (car) t += ' Das E-Auto ist mit rund 2.500 kWh pro Jahr eingerechnet.';
       txt('pv-verdict', t);
+      vizPv(area, f, self, aut, bat, car, kwp);
     };
     var all = function () { outs(); wallbox(); pv(); };
     document.addEventListener('input', all);
