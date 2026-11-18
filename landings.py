@@ -33,13 +33,13 @@ def v3(KREISE, VIZ, CALL, TEL, I):
 <svg class="wave" id="wave" viewBox="0 0 1000 1500" preserveAspectRatio="none" aria-hidden="true"><path class="wv-fill" d="%(wave)sV1500H0Z"/><path class="wv-edge" d="%(wave)s"/></svg>
 
 <section class="st" id="s1" style="padding:0"><div class="pin">
-<div class="k-wrap" id="k-wrap"><picture><source media="(max-width:700px)" srcset="../assets/img/kasten-m.jpg"><img class="k-img" src="../assets/img/kasten.jpg" alt="Offener Sicherungskasten an einer dunklen Wand"></picture></div>
+<div class="k-wrap" id="k-wrap"><picture><source media="(max-width:700px)" srcset="../assets/img/kasten-m.jpg"><img class="k-img" src="../assets/img/kasten.jpg" alt="Offener Sicherungskasten an einer dunklen Wand"></picture><video class="k-vid" id="kvid" muted playsinline preload="auto" tabindex="-1" aria-hidden="true"><source src="../assets/vid/schalter.mp4" type="video/mp4"></video></div>
 <div class="k-vig"></div>
 <div class="beats">
-<div class="beat" data-a="-1" data-b=".2"><h1>Strom weg?</h1><p class="only-out">Scroll weiter. Finger oder Maus sind deine Taschenlampe.</p></div>
-<div class="beat" data-a=".26" data-b=".46"><p class="big">Kein Licht.<br>Kein Herd.<br>Kein WLAN.</p></div>
-<div class="beat" data-a=".52" data-b=".72"><p class="big">Irgendwo im Keller<br>sitzt der Grund.</p></div>
-<div class="beat low" data-a=".78" data-b="2"><p class="big only-out">Leg den Hauptschalter um.</p><p class="big only-on">Strom läuft.<br><em>Wir bringen ihn zurück.</em></p></div>
+<div class="beat" data-a="-1" data-b=".13"><h1>Strom weg?</h1><p class="only-out">Scroll weiter. Unten im Keller sitzt der Schalter.</p></div>
+<div class="beat" data-a=".18" data-b=".34"><p class="big">Kein Licht.<br>Kein Herd.<br>Kein WLAN.</p></div>
+<div class="beat" data-a=".4" data-b=".56"><p class="big">Irgendwo im Keller<br>sitzt der Grund.</p></div>
+<div class="beat low" data-a=".62" data-b="2"><p class="big only-out">Leg den Hauptschalter um.</p><p class="big only-on">Strom läuft.<br><em>Wir bringen ihn zurück.</em></p></div>
 </div>
 <button class="dk-hot" id="hot" type="button" aria-label="Hauptschalter umlegen"><i></i></button>
 <p class="hint-scroll">scrollen</p>
