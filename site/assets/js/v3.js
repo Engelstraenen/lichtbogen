@@ -12,7 +12,7 @@
   var clamp = function (v, a, b) { return Math.max(a, Math.min(b, v)); };
   var ease = function (t) { t = clamp(t, 0, 1); return t * t * (3 - 2 * t); };
   var isOut = function () { return root.classList.contains('out'); };
-  var store = function (v) { try { v ? sessionStorage.setItem('lb3-power', '1') : sessionStorage.removeItem('lb3-power'); } catch (e) {} };
+  var store = function () {}; /* die Seite startet bei jedem Öffnen dunkel, der Zustand wird nicht gemerkt */
   function cover(w, h, u, v, px, py) { var dw = Math.max(w, h * AR), dh = dw / AR; return [(w - dw) * px + u * dw, (h - dh) * py + v * dh]; }
   function prog(sec) { var r = sec.getBoundingClientRect(); return clamp(-r.top / (r.height - innerHeight), 0, 1); }
   function inView(sec) { var r = sec.getBoundingClientRect(); return r.top < innerHeight && r.bottom > 0; }
@@ -63,8 +63,8 @@
   if (vid && !reduce) {
     var ready = function () { if (vOK) return; vOK = true; kwrap.classList.add('has-vid'); film(); scene1(); };
     vid.addEventListener('loadeddata', ready); if (vid.readyState >= 2) ready();
-    /* Handy bekommt die kleinere Fassung */
-    vid.src = vid.getAttribute(innerWidth < 720 ? 'data-src-m' : 'data-src'); vid.load();
+    /* iPhone lädt Videos erst beim Abspielen: kurz stumm anspielen und gleich wieder anhalten */
+    try { var warm = vid.play(); if (warm && warm.then) warm.then(function () { if (!playing) { vid.pause(); vid.currentTime = T0; } }).catch(function () {}); } catch (e) {}
     vid.addEventListener('error', function () { vOK = false; kwrap.classList.remove('has-vid'); film(); }, true);
   }
   function scene1() {

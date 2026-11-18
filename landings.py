@@ -33,7 +33,7 @@ def v3(KREISE, VIZ, CALL, TEL, I):
 <svg class="wave" id="wave" viewBox="0 0 1000 1500" preserveAspectRatio="none" aria-hidden="true"><path class="wv-fill" d="%(wave)sV1500H0Z"/><path class="wv-edge" d="%(wave)s"/></svg>
 
 <section class="st" id="s1" style="padding:0"><div class="pin">
-<div class="k-wrap" id="k-wrap"><picture><source media="(max-width:700px)" srcset="../assets/img/kasten-m.jpg"><img class="k-img" src="../assets/img/kasten.jpg" alt="Offener Sicherungskasten an einer dunklen Wand"></picture><video class="k-vid" id="kvid" muted playsinline preload="auto" tabindex="-1" aria-hidden="true" data-src="../assets/vid/schalter.mp4" data-src-m="../assets/vid/schalter-m.mp4"></video></div>
+<div class="k-wrap" id="k-wrap"><picture><source media="(max-width:700px)" srcset="../assets/img/kasten-m.jpg"><img class="k-img" src="../assets/img/kasten.jpg" alt="Offener Sicherungskasten an einer dunklen Wand"></picture><video class="k-vid" id="kvid" muted playsinline preload="auto" tabindex="-1" aria-hidden="true"><source media="(max-width:719px)" src="../assets/vid/schalter-m.mp4" type="video/mp4"><source src="../assets/vid/schalter.mp4" type="video/mp4"></video></div>
 <div class="k-vig"></div>
 <div class="beats">
 <div class="beat" data-a="-1" data-b=".07"><h1>Strom weg?</h1><p class="only-out">Scroll weiter. Unten im Keller sitzt der Schalter.</p></div>

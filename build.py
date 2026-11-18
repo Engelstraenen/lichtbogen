@@ -44,7 +44,7 @@ def emit(vdir, file, title, desc, body, scripts="", landing=False):
     forced = "'%s'" % v["theme"] if v["theme"] else "null"
     head_extra = ""
     if vdir == "stromausfall" and landing:
-        head_extra = "<script>try{if(location.search.indexOf('licht=an')>-1)sessionStorage.setItem('lb3-power','1');if(!sessionStorage.getItem('lb3-power')){var d=document.documentElement;d.setAttribute('data-theme','dark');d.classList.add('out')}}catch(e){}</script>"
+        head_extra = "<script>try{sessionStorage.removeItem('lb3-power');if(location.search.indexOf('licht=an')<0){var d=document.documentElement;d.setAttribute('data-theme','dark');d.classList.add('out')}}catch(e){}</script>"
     light = ('<button class="tool" type="button" data-light aria-pressed="true" aria-label="Licht ausschalten">%s</button>' % I["bulb"]) if not v["theme"] else ""
     if vdir == "stromausfall" and landing:
         light = '<button class="lsw" id="lsw" type="button" role="switch" aria-checked="false" aria-label="Licht an oder aus"><span>Licht</span><i></i></button>'
