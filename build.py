@@ -97,6 +97,9 @@ def emit(vdir, file, title, desc, body, scripts="", landing=False):
            n=v["n"], ver=VER, forced=forced, head_extra=head_extra, css=v["css"], js=js, light=light,
            logo=I["logo"], sound=I["sound"], bulb=I["bulb"], phone=I["phone"], cam=I["cam"])
     (OUT / vdir).mkdir(exist_ok=True)
+    # Cache-Stempel auch an Bilder und Filme, sonst zeigt der Browser alte Fassungen
+    for ext in (".jpg", ".mp4"):
+        html = html.replace(ext + '"', ext + "?v=" + VER + '"')
     (OUT / vdir / file).write_text(html, encoding="utf-8")
     print("ok", vdir, file, len(html))
 
