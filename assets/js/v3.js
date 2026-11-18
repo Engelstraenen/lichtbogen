@@ -208,18 +208,73 @@
     requestAnimationFrame(arcLoop);
   }
 
-  /* ---------- Szene 5: Handy-Bildschirm wechselt beim Scrollen ---------- */
-  var ph = $('#ph'), scr = $('#ph-screen'), scrs = $$('.scr', scr), step5 = -1;
+  /* ---------- Szene 5: selbst fotografieren, Polaroids fliegen zum Meister ---------- */
+  var cam = $('#cam'), vf = $('#vf'), vfImg = $('#vf-img'), vfN = $('#vf-n'), shut = $('#shut'), pols = $$('.pol', cam);
+  var camOk = $('#cam-ok'), OKIMG = false; /* OKIMG = true, sobald das Schlussbild mit Haken da ist */
+  var camB = $('#cam-b'), camC = $('#cam-c'), camFlash = $('#cam-flash'), camSay = $('#cam-say');
+  /* Lage im Foto (Anteile): Handy-Display im Kellerbild, Mappe und Seitenverhältnisse */
+  var VF = [0.441, 0.302, 0.562, 0.778], FOLD = [0.535, 0.66], ARA = 16 / 9, FOCA = 0.5, FOCB = 0.52;
+  var NAMES = ['Sicherungskasten.', 'Zähler.', 'Problemstelle.'], shots = 0, shotT = [0, 0, 0], p5 = 0, loop5 = false;
+  var vfR = { x: 0, y: 0, w: 10, h: 10 }, fold = [0, 0], cw = 0, ch = 0, pw = 150;
+  function cov(w, h, u, v, px) { var dw = Math.max(w, h * ARA), dh = dw / ARA; return [(w - dw) * px + u * dw, (h - dh) * 0.5 + v * dh]; }
   function fitPhone() {
-    var r = ph.getBoundingClientRect(), a = cover(r.width, r.height, 0.618, 0.155, 0.72, 0.5), b = cover(r.width, r.height, 0.772, 0.722, 0.72, 0.5);
-    scr.style.transform = 'translate(' + a[0].toFixed(1) + 'px,' + a[1].toFixed(1) + 'px)';
-    scr.style.width = (b[0] - a[0]).toFixed(1) + 'px'; scr.style.height = (b[1] - a[1]).toFixed(1) + 'px';
+    var r = cam.getBoundingClientRect(); cw = r.width; ch = r.height;
+    var a = cov(cw, ch, VF[0], VF[1], FOCA), b = cov(cw, ch, VF[2], VF[3], FOCA);
+    vfR = { x: a[0], y: a[1], w: b[0] - a[0], h: b[1] - a[1] };
+    vf.style.transform = 'translate(' + a[0].toFixed(1) + 'px,' + a[1].toFixed(1) + 'px)';
+    vf.style.width = vfR.w.toFixed(1) + 'px'; vf.style.height = vfR.h.toFixed(1) + 'px';
+    fold = cov(cw, ch, FOLD[0], FOLD[1], FOCB);
+    pw = Math.min(ch * 0.19, cw * 0.27); cam.style.setProperty('--pw', pw.toFixed(0) + 'px');
+    camFlash.style.setProperty('--fx', ((vfR.x + vfR.w / 2) / cw * 100).toFixed(1) + '%');
+    camFlash.style.setProperty('--fy', ((vfR.y + vfR.h * 0.1) / ch * 100).toFixed(1) + '%');
+    $$('.cam-bg img', cam).forEach(function (im, i) { im.style.objectPosition = ((i ? FOCB : FOCA) * 100) + '% 50%'; });
   }
+  function shoot() {
+    if (shots >= 3) return;
+    var i = shots++; shotT[i] = performance.now();
+    camFlash.classList.remove('go'); void camFlash.offsetWidth; camFlash.classList.add('go');
+    if (FX && !reduce) { var r = cam.getBoundingClientRect(); FX.spark(r.left + vfR.x + vfR.w / 2, r.top + vfR.y, 26, '#fff3c9'); }
+    if (shots < 3) { vfImg.src = vfImg.src.replace(/foto-\d/, 'foto-' + (shots + 1)); vfN.textContent = 'Foto ' + (shots + 1) + ' von 3'; camSay.textContent = NAMES[shots]; }
+    else { vfN.textContent = '3 von 3'; camSay.textContent = 'Zack. Zack. Zack.'; cam.classList.add('done'); }
+    if (!loop5) { loop5 = true; requestAnimationFrame(tick5); }
+  }
+  function back(t) { t = clamp(t, 0, 1); var c = 1.7; return 1 + (c + 1) * Math.pow(t - 1, 3) + c * Math.pow(t - 1, 2); }
+  function placePols(now) {
+    var cx = vfR.x + vfR.w / 2, ty = vfR.y, busy = false;
+    var fan = [[-1.02, 0.1, -11], [0, -0.16, 2], [1.02, 0.1, 12]];
+    pols.forEach(function (el, i) {
+      if (i >= shots) { el.style.opacity = 0; return; }
+      var s = reduce ? 1 : (now - shotT[i]) / 620; if (s < 1) busy = true;
+      var e = back(s), fx = cx + fan[i][0] * pw, fy = ty + fan[i][1] * pw + pw * 0.1;
+      /* 1. aus dem Handy heraus in den Fächer */
+      var x = cx + (fx - cx) * e, y = (ty + pw * 0.5) + (fy - (ty + pw * 0.5)) * e, sc = 0.35 + 0.65 * clamp(s * 1.4, 0, 1), rot = fan[i][2] * e, op = clamp(s * 5, 0, 1);
+      /* 2. Flug zur Mappe, einer nach dem anderen */
+      var t = ease((p5 - 0.54 - i * 0.035) / 0.2), d = ease((p5 - 0.74 - i * 0.02) / 0.07);
+      var mx = fold[0] + (i - 1) * pw * 0.42, my = fold[1] - pw * 0.95, arc = Math.sin(t * Math.PI) * -ch * 0.08;
+      x += (mx - x) * t; y += (my - y) * t + arc; sc *= 1 - 0.38 * t; rot += (i - 1) * -6 * t;
+      /* 3. in die Mappe fallen */
+      x += (fold[0] - x) * d; y += (fold[1] - y) * d; sc *= 1 - 0.6 * d; op *= 1 - ease((d - 0.5) / 0.5);
+      el.style.opacity = op.toFixed(3);
+      el.style.transform = 'translate(' + (x - pw / 2).toFixed(1) + 'px,' + (y - pw * 0.62).toFixed(1) + 'px) rotate(' + rot.toFixed(2) + 'deg) scale(' + sc.toFixed(3) + ')';
+      if (d > 0.05 && d < 0.6 && FX && !reduce && Math.random() < 0.35) { var r = cam.getBoundingClientRect(); FX.spark(r.left + x, r.top + y, 3, '#ffd166'); }
+    });
+    return busy;
+  }
+  function tick5(now) { scene5(); if (placePols(now) && inView(s5)) requestAnimationFrame(tick5); else loop5 = false; }
   function scene5() {
-    var p = prog(s5), st = p < 0.25 ? 0 : p < 0.5 ? 1 : p < 0.75 ? 2 : 3;
-    if (st !== step5) { step5 = st; scrs.forEach(function (s, i) { s.classList.toggle('on', i === st); }); }
-    beats(beatSets[2], p);
+    p5 = prog(s5);
+    /* wer nur scrollt, bekommt die drei Fotos trotzdem: zack, zack, zack */
+    var want = p5 > 0.44 ? 3 : p5 > 0.33 ? 2 : p5 > 0.22 ? 1 : 0;
+    if (want > shots && inView(s5)) shoot();
+    var k = ease((p5 - 0.56) / 0.14);
+    camB.style.opacity = k.toFixed(3); vf.style.opacity = (1 - ease((p5 - 0.54) / 0.08)).toFixed(3);
+    vf.style.pointerEvents = p5 > 0.54 ? 'none' : 'auto';
+    camC.style.opacity = ease((p5 - 0.8) / 0.06).toFixed(3);
+    if (camOk) { var ko = ease((p5 - 0.8) / 0.05); camOk.style.opacity = (OKIMG ? 0 : ko).toFixed(3); camOk.style.transform = 'translate(' + fold[0].toFixed(1) + 'px,' + fold[1].toFixed(1) + 'px) scale(' + (0.6 + 0.4 * back(ko)).toFixed(3) + ')'; }
+    placePols(performance.now());
+    beats(beatSets[2], p5);
   }
+  if (shut) shut.addEventListener('click', shoot);
 
   /* ---------- eine Schleife für alles, was am Scrollen hängt ---------- */
   var tick = false;
