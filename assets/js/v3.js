@@ -392,4 +392,26 @@
   sheet.addEventListener('click', function (e) { if (e.target === sheet) close(); });
   addEventListener('keydown', function (e) { if (e.key === 'Escape' && !sheet.hidden) close(); });
   document.addEventListener('pointerdown', function (e) { if (e.target.closest('.btn,.lsw')) FX.spark(e.clientX, e.clientY, 12, '#ffd166'); });
+  /* ---------- Notdienst: Motion Design, läuft von selbst, solange der Abschnitt zu sehen ist ---------- */
+  (function () {
+    var st = $('#nd-stage'); if (!st) return;
+    var DUR = [2300, 1900, 2400, 2400, 2500, 2800], bars = $$('.nd-bar i', st), tEl = $('#nd-time'), cur = -1, timer = 0, tick = 0, vis = false, hold = false;
+    function show(i) {
+      cur = i; st.setAttribute('data-s', i);
+      bars.forEach(function (b, n) { b.classList.remove('run'); b.classList.toggle('done', n < i); if (n === i) { b.style.setProperty('--d', DUR[i] + 'ms'); void b.offsetWidth; b.classList.add('run'); } });
+      clearInterval(tick);
+      if (i === 3 && tEl) { var m = 49; tEl.textContent = '22:49'; tick = setInterval(function () { m += 3; tEl.textContent = (m >= 60 ? '23:' + ('0' + (m - 60)).slice(-2) : '22:' + m); }, 260); }
+      clearTimeout(timer);
+      if (vis && !hold) timer = setTimeout(function () { show((i + 1) % DUR.length); }, DUR[i]);
+    }
+    if (reduce) { st.setAttribute('data-s', 5); bars.forEach(function (b) { b.classList.add('done'); }); return; }
+    if ('IntersectionObserver' in window) new IntersectionObserver(function (es) {
+      vis = es[0].isIntersecting;
+      if (vis && !hold) show(cur < 0 ? 0 : cur); else { clearTimeout(timer); clearInterval(tick); }
+    }, { threshold: 0.35 }).observe(st);
+    else { vis = true; show(0); }
+    $('#nd-re').addEventListener('click', function (e) { e.stopPropagation(); hold = !hold; st.classList.toggle('hold', hold); if (hold) { clearTimeout(timer); clearInterval(tick); } else show(cur < 0 ? 0 : cur); });
+    bars.forEach(function (b, n) { b.style.cursor = 'pointer'; });
+    st.addEventListener('click', function (e) { if (e.target.closest('.nd-re')) return; var r = st.getBoundingClientRect(); if (!hold) show(e.clientX - r.left > r.width / 2 ? (cur + 1) % DUR.length : (cur + DUR.length - 1) % DUR.length); });
+  })();
 })();
