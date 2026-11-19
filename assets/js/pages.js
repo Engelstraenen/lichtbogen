@@ -52,8 +52,8 @@
     /* Wege vom Carport zum Ziel, je Welt (Raster 1600 x 900) */
     var WELT = window.LB_WELT || [
       { path: 'M655 505 C 640 560, 680 598, 760 614 S 940 636, 1040 592 S 1212 560, 1236 512 S 1218 468, 1186 456', name: 'zum Bäcker und zurück' },
-      { path: 'M520 520 C 700 640, 900 640, 1000 520 S 1150 380, 1250 400', name: 'durch den Ort ins Büro und zurück' },
-      { path: 'M520 520 C 700 640, 900 600, 1050 480 S 1300 260, 1480 200', name: 'über die Brücke in die Stadt und zurück' }
+      { path: 'M610 545 C 560 580, 580 612, 680 622 S 900 650, 1010 612 S 1100 545, 1070 500 S 960 455, 880 435 S 700 420, 692 385 S 760 335, 860 332 S 1080 385, 1180 400 S 1290 420, 1330 422', name: 'durch den Ort ins Büro und zurück' },
+      { path: 'M560 548 C 470 560, 380 580, 400 610 S 500 648, 580 636 S 760 580, 860 510 S 1080 410, 1200 360 S 1380 310, 1392 282 S 1340 250, 1280 246', name: 'über die Brücke in die Stadt und zurück' }
     ];
     var mw = { o: null, t0: 0, world: -1, len: 1, run: false, cells: 0 }, mwEl = $('#viz-wb');
     var carEl = $('#mw-car'), trailEl = $('#mw-trail'), s1 = $('#mw-s1'), s2 = $('#mw-s2'), pubEl = $('#mw-pub'), nightEl = $('#mw-night'), dawnEl = $('#mw-dawn'), stepsEl = mwEl ? mwEl.querySelectorAll('.mw-steps i') : [];
