@@ -35,11 +35,11 @@
     /* ---------- Szenen zum Rechner: jede Zahl bewegt etwas im Bild ---------- */
     /* Lage im Bild (Raster 1600 x 900): Ladekabel, Dachfläche, Hauskörper, Energiewege */
     var GEO = {
-      cable: 'M420 430 C 430 700, 620 760, 760 690 S 900 520, 930 470',
-      roof: [[30, 20], [70, 20], [80, 48], [22, 48]],          /* links oben, rechts oben, rechts unten, links unten, in Prozent */
-      body: [[20, 48], [82, 48], [82, 86], [20, 86]],
-      f1: 'M800 430 L800 560', f2: 'M800 560 L1080 560 L1080 640', f3: 'M1080 640 L1250 640 L1250 700',
-      bat: [64, 66], car: [74, 78]
+      cable: 'M517 516 C 514 610, 520 700, 560 765 S 660 818, 715 795 S 742 738, 800 725 S 896 706, 913 625 S 925 566, 937 549',
+      roof: [[24.3, 17.9], [62.8, 30.0], [76.8, 51.3], [35.0, 43.9]],          /* links oben, rechts oben, rechts unten, links unten, in Prozent */
+      body: [[16.9, 52.6], [24.3, 17.9], [35.0, 43.9], [76.8, 51.3], [77.2, 60.5], [94.0, 61.4], [94.0, 80.6], [36.9, 86.2], [18.4, 81.7]],
+      f1: 'M880 440 L880 548', f2: 'M880 548 L1180 548 L1180 640', f3: 'M1180 640 L1180 705 L1370 705',
+      bat: [68.5, 64], car: [79, 79]
     };
     if (window.LB_GEO) for (var gk in window.LB_GEO) GEO[gk] = window.LB_GEO[gk];
     var sv = function (id, k, v) { var e = $('#' + id); if (e) e.style.setProperty(k, v); };

@@ -352,21 +352,22 @@ details li{margin:4px 0}
 .viz img{position:absolute;inset:0;width:100%;height:100%;max-width:none;object-fit:cover}
 .viz-on,.viz-lay{opacity:0;transition:opacity .6s ease}
 .viz-lay{transition:opacity .6s ease,clip-path .5s cubic-bezier(.2,.8,.2,1)}
-.viz-svg{position:absolute;inset:0;width:100%;height:100%;overflow:visible}
+.viz>.viz-svg{position:absolute;left:0;top:0;width:100%!important;height:100%!important;max-width:none;overflow:visible;z-index:2}
+.viz>div.viz-on{z-index:1}.viz>.hud,.viz>.chip{z-index:3}
 .cab{fill:none;stroke-linecap:round;stroke-linejoin:round}
-.cab-glow{stroke:#ffb347;stroke-width:calc(var(--th,7)*3.2px);opacity:calc(var(--pw,.5)*.28);filter:blur(6px)}
+.cab-glow{stroke:#ffb347;stroke-width:calc(var(--th,7)*3px);opacity:calc(var(--pw,.5)*.2)}
 .cab-core{stroke:#ffb347;stroke-width:calc(var(--th,7)*.55px);opacity:calc(.25 + var(--pw,.5)*.5)}
-.cab-pulse{stroke:#fff3cf;stroke-width:calc(var(--th,7)*1px);stroke-dasharray:var(--dash,60) var(--gap,150);animation:cabflow var(--spd,1.3s) linear infinite;filter:drop-shadow(0 0 6px #ffb347)}
+.cab-pulse{stroke:#fff3cf;stroke-width:calc(var(--th,7)*1px);stroke-dasharray:var(--dash,60) var(--gap,150);animation:cabflow var(--spd,1.3s) linear infinite}
 @keyframes cabflow{from{stroke-dashoffset:var(--tot,210)}to{stroke-dashoffset:0}}
-.hud{position:absolute;padding:1.6cqw 2cqw;border-radius:2cqw;background:rgba(7,10,18,.72);border:1px solid rgba(255,255,255,.14);color:#fff;-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);display:grid;gap:.5cqw;min-width:17cqw}
+.hud{position:absolute;padding:1.6cqw 2cqw;border-radius:2cqw;background:rgba(7,10,18,.86);border:1px solid rgba(255,255,255,.14);color:#fff;display:grid;gap:.5cqw;min-width:17cqw}
 .hud b{font:800 3.6cqw/1 var(--head,inherit);letter-spacing:-.03em;font-variant-numeric:tabular-nums}
 .hud span{font-size:1.55cqw;color:#c9cfdb;line-height:1.2}
 .hud-a{left:3cqw;top:3cqw}.hud-b{right:3cqw;top:3cqw}.hud-c{right:3cqw;bottom:3cqw}
 .hbat{position:relative;height:3.2cqw;border-radius:.9cqw;border:.35cqw solid #fff;padding:.35cqw;margin:0 1cqw .4cqw 0}
 .hbat::after{content:"";position:absolute;right:-1.3cqw;top:25%;width:.8cqw;height:50%;border-radius:0 .4cqw .4cqw 0;background:#fff}
 .hbat i{display:block;height:100%;width:var(--fill,50%);border-radius:.4cqw;background:var(--bc,#ffb347);box-shadow:0 0 2cqw var(--bc,#ffb347);transition:width .5s cubic-bezier(.2,.8,.2,1),background .3s}
-.viz-sun{position:absolute;left:var(--sx,50%);top:-18%;width:70cqw;height:70cqw;margin-left:-35cqw;border-radius:50%;pointer-events:none;background:radial-gradient(circle,rgba(255,200,110,.55),rgba(255,200,110,0) 62%);opacity:var(--so,.5);transition:left .7s cubic-bezier(.2,.8,.2,1),opacity .5s;mix-blend-mode:screen}
-.flow{fill:none;stroke:#ffcf6b;stroke-width:6;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:14 26;opacity:var(--fo,0);animation:cabflow var(--fs,1.2s) linear infinite;--tot:40;filter:drop-shadow(0 0 7px #ffb347);transition:opacity .4s}
+.viz-sun{position:absolute;left:var(--sx,50%);top:-18%;width:70cqw;height:70cqw;margin-left:-35cqw;border-radius:50%;pointer-events:none;background:radial-gradient(circle,rgba(255,200,110,.55),rgba(255,200,110,0) 62%);opacity:var(--so,.5);transition:left .7s cubic-bezier(.2,.8,.2,1),opacity .5s}
+.flow{fill:none;stroke:#ffcf6b;stroke-width:6;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:14 26;opacity:var(--fo,0);animation:cabflow var(--fs,1.2s) linear infinite;--tot:40;transition:opacity .4s}
 .chip{position:absolute;display:flex;align-items:center;gap:1cqw;padding:1cqw 1.6cqw;border-radius:99px;background:rgba(7,10,18,.78);border:1px solid rgba(255,179,71,.6);color:#fff;font-size:1.7cqw;opacity:0;scale:.7;transition:opacity .35s,scale .45s cubic-bezier(.2,1.5,.4,1);white-space:nowrap}
 .chip.on{opacity:1;scale:1}
 .chip i{width:3.2cqw;height:1.6cqw;border-radius:.4cqw;border:.25cqw solid #fff;background:linear-gradient(90deg,#3ddc6a var(--bf,50%),transparent 0)}
@@ -375,5 +376,19 @@ details li{margin:4px 0}
 .hud-ring b{position:absolute;top:1.6cqw;left:0;right:0;height:13cqw;display:grid;place-items:center;font-size:3.3cqw}
 .r-bg{fill:none;stroke:rgba(255,179,71,.2);stroke-width:12}
 .r-fg{fill:none;stroke:#ffb347;stroke-width:12;stroke-linecap:round;stroke-dasharray:100;stroke-dashoffset:calc(100 - var(--rv,50));transition:stroke-dashoffset .6s cubic-bezier(.2,.8,.2,1)}
-@media (max-width:719px){.viz{aspect-ratio:4/3;border-radius:16px}.hud b{font-size:5.4cqw}.hud span{font-size:2.6cqw}.hud{padding:2.2cqw 2.6cqw;min-width:0}.hud-c{display:none}.hbat{height:4.6cqw}.chip{font-size:2.8cqw}.hud-ring svg,.hud-ring b{width:19cqw;height:19cqw}.hud-ring b{width:auto;font-size:4.6cqw}}
+@media (max-width:719px){.viz{border-radius:14px}.hud b{font-size:5.4cqw}.hud span{font-size:2.6cqw}.hud{padding:2.2cqw 2.6cqw;min-width:0}.hud-c{display:none}.hbat{height:4.6cqw}.chip{font-size:2.8cqw}.hud-ring svg,.hud-ring b{width:19cqw;height:19cqw}.hud-ring b{width:auto;font-size:4.6cqw}}
 @media (prefers-reduced-motion:reduce){.cab-pulse,.flow{animation:none}}
+/* Scheinwerfer des Autos: leuchten mit steigender Ladeleistung auf */
+div.viz-on{position:absolute;inset:0;pointer-events:none}
+.hl{position:absolute;border-radius:50%;background:radial-gradient(circle,#fff 0,rgba(210,230,255,.9) 14%,rgba(160,200,255,.35) 38%,rgba(160,200,255,0) 70%)}
+.hl1{left:69.4%;top:61.4%;width:13cqw;height:13cqw;margin:-6.5cqw 0 0 -6.5cqw}
+.hl2{left:79.6%;top:66.2%;width:7cqw;height:7cqw;margin:-3.5cqw 0 0 -3.5cqw;opacity:.7}
+.hl-floor{position:absolute;left:62%;top:70%;width:34cqw;height:12cqw;border-radius:50%;background:radial-gradient(ellipse,rgba(200,225,255,.4),rgba(200,225,255,0) 70%)}
+#viz-pv .hud-ring{right:auto;left:3cqw}
+.viz{min-width:0;width:100%}
+.calc>*{min-width:0}
+@media (max-width:719px){
+  /* die Szene bleibt oben stehen, während man die Regler darunter bewegt */
+  .viz{position:sticky;top:104px;z-index:6;box-shadow:0 14px 34px rgba(0,0,0,.6)}
+  .chip{font-size:2.5cqw;translate:-55% 0;padding:.9cqw 1.5cqw}
+}
