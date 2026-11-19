@@ -183,20 +183,20 @@ RECHNER = """
 </div>
 
 <div class="calc" id="p-wb" role="tabpanel" aria-labelledby="t-wb">
-<div class="viz" id="viz-wb" aria-hidden="true">
-<img class="viz-bg" src="../assets/img/wallbox.jpg" alt="">
-<div class="viz-on" id="wb-on"><i class="hl hl1"></i><i class="hl hl2"></i><i class="hl-floor"></i></div>
+<div class="viz mw" id="viz-wb" aria-hidden="true">
+<img class="mw-img on" src="../assets/img/welt-1.jpg" alt=""><img class="mw-img" src="../assets/img/welt-2.jpg" alt=""><img class="mw-img" src="../assets/img/welt-3.jpg" alt="">
+<div class="mw-night" id="mw-night"><i class="mw-moon" id="mw-moon"></i></div>
+<div class="mw-dawn" id="mw-dawn"></div>
 <svg class="viz-svg" viewBox="0 0 1600 900" preserveAspectRatio="xMidYMid slice">
-<path class="cab cab-glow" id="wb-c1" d="M0 0"/><path class="cab cab-core" id="wb-c2" d="M0 0"/><path class="cab cab-pulse" id="wb-c3" d="M0 0"/>
+<path class="mw-p mw-stream-g" id="mw-s1" d="M0 0"/><path class="mw-p mw-stream" id="mw-s2" d="M0 0"/>
+<path class="mw-p mw-trail" id="mw-trail" d="M0 0"/>
+<circle class="mw-pub" id="mw-pub" r="0"/>
+<g id="mw-car" class="mw-car"><ellipse class="c-sh" cx="0" cy="5" rx="24" ry="9"/><path class="c-beam" d="M14 -7 L78 -22 L78 22 L14 7z"/><rect class="c-body" x="-19" y="-10" width="38" height="20" rx="8"/><rect class="c-glass" x="1" y="-7.500" width="11" height="15" rx="3.500"/><circle class="c-led" cx="-15" cy="0" r="3"/></g>
 </svg>
-<div class="wn" id="wn"><span class="wn-moon"></span>
-<div class="wn-track"><i id="wn-fill"></i><b id="wn-dot"></b><u style="left:0">22 Uhr</u><u style="left:25%%">0 Uhr</u><u style="left:50%%">2 Uhr</u><u style="left:75%%">4 Uhr</u><u style="left:100%%">6 Uhr</u></div>
-<span class="wn-sun"></span><p><b id="wn-t">–</b><span id="wn-s">Tagesstrecke nachgeladen</span></p></div>
-<div class="wp" id="wp"><div class="wp-cells" id="wp-cells"></div><div class="wp-split"><i id="wp-home"></i></div>
-<p><b id="wp-t">–</b><span id="wp-s">–</span></p></div>
-<div class="wr" id="wr"><i class="wr-home"></i><div class="wr-line"><i id="wr-trail"></i><b class="wr-car" id="wr-car"></b><em class="wr-pin" id="wr-pin"></em></div>
-<p><b id="wr-t">–</b><span id="wr-s">–</span></p></div>
-<div class="hud hud-c wkw"><b id="wb-hud-kw">–</b><span>Ladeleistung · <span id="wb-hud-kmh">–</span> je Stunde</span></div>
+<div class="mw-bat" id="mw-bat"><div class="wp-cells" id="wp-cells"></div><p><b id="mw-bat-t">–</b><span id="mw-bat-s">–</span></p></div>
+<div class="mw-clock"><b id="mw-time">–</b><span id="mw-phase">–</span></div>
+<div class="mw-cap"><b id="mw-cap-t">–</b><span id="mw-cap-s">–</span></div>
+<div class="mw-steps"><i></i><i></i><i></i><i></i></div>
 </div>
 <div class="card">
 %(wb_km)s%(wb_v)s%(wb_akku)s%(wb_home)s%(wb_kw)s
