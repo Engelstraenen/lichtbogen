@@ -396,3 +396,55 @@ div.viz-on{position:absolute;inset:0;pointer-events:none}
 .viz img{will-change:transform}
 .viz>.viz-svg{will-change:transform;contain:layout paint}
 body:has(.viz)::after{display:none!important}
+
+/* Wallbox-Szene: jeder Regler bewegt etwas Eigenes */
+.wn,.wp,.wr{position:absolute;z-index:3;color:#fff;background:rgba(7,10,18,.84);border:1px solid rgba(255,255,255,.14);border-radius:2cqw}
+.wn p,.wp p,.wr p{margin:0;display:flex;align-items:baseline;gap:1.2cqw;flex-wrap:wrap}
+.wn b,.wp b,.wr b{font:800 2.9cqw/1 var(--head,inherit);letter-spacing:-.03em;font-variant-numeric:tabular-nums}
+.wn p span,.wp p span,.wr p span{font-size:1.5cqw;color:#c9cfdb}
+.pop{animation:wpop .4s cubic-bezier(.2,1.6,.4,1)}
+@keyframes wpop{0%{scale:1}40%{scale:1.07}100%{scale:1}}
+/* Nacht von 22 bis 6 Uhr: so lange lädt die Tagesstrecke */
+.wn{left:3cqw;right:3cqw;top:3cqw;padding:1.6cqw 2cqw 1.4cqw;display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:1.4cqw 1.6cqw}
+.wn p{grid-column:1/-1;margin-top:2.2cqw}
+.wn-moon,.wn-sun{width:3cqw;height:3cqw;border-radius:50%}
+.wn-moon{background:radial-gradient(circle at 68% 35%,transparent 46%,#cfe0ff 48%);box-shadow:0 0 2cqw rgba(160,190,255,.5)}
+.wn-sun{background:#ffcf6b;box-shadow:0 0 0 .6cqw rgba(255,207,107,.25),0 0 2.4cqw rgba(255,190,90,.9)}
+.wn-track{position:relative;height:1.5cqw;border-radius:99px;background:linear-gradient(90deg,#16245a,#0d1640 55%,#3b3a6e 85%,#a8764a)}
+.wn-track i{position:absolute;left:0;top:0;bottom:0;width:var(--w,30%);border-radius:99px;background:linear-gradient(90deg,#ffb347,#fff0c4);box-shadow:0 0 2cqw rgba(255,179,71,.9);transition:width .55s cubic-bezier(.2,.8,.2,1),background .3s}
+.wn-track i.over{background:linear-gradient(90deg,#ff7a45,#ff3b30);box-shadow:0 0 2cqw rgba(255,80,60,.9)}
+.wn-track b{position:absolute;top:50%;left:var(--w,30%);width:3cqw;height:3cqw;margin:-1.5cqw 0 0 -1.5cqw;border-radius:50%;background:#fff;box-shadow:0 0 0 .5cqw rgba(255,179,71,.5),0 0 2.4cqw #ffb347;transition:left .55s cubic-bezier(.2,.8,.2,1)}
+.wn-track u{position:absolute;top:2.1cqw;translate:-50% 0;font-size:1.25cqw;color:#9aa6c4;text-decoration:none;white-space:nowrap}
+/* Akku-Pack: wächst mit der Akkugröße, die Tagesstrecke leert ein paar Zellen, die Wallbox füllt sie nach */
+.wp{left:3cqw;top:19.5cqw;padding:1.4cqw 1.6cqw;min-width:22cqw;max-width:26cqw}
+.wp-cells{display:flex;gap:.5cqw;height:5.2cqw;padding:.5cqw;border:.35cqw solid #fff;border-radius:1.1cqw;position:relative;margin-right:1.2cqw;transition:width .5s cubic-bezier(.2,.8,.2,1)}
+.wp-cells::after{content:"";position:absolute;right:-1.4cqw;top:28%;width:.9cqw;height:44%;border-radius:0 .5cqw .5cqw 0;background:#fff}
+.wp-cells i{flex:1 1 0;min-width:1.4cqw;border-radius:.45cqw;background:#3ddc6a;box-shadow:0 0 1.2cqw rgba(61,220,106,.55);animation:cellin .35s cubic-bezier(.2,1.6,.4,1) both}
+.wp-cells i.use{background:rgba(255,255,255,.1);box-shadow:none;animation:cellfill var(--cf,2.4s) linear infinite;animation-delay:var(--cd,0s)}
+@keyframes cellin{from{scale:.2 1;opacity:0}to{scale:1 1;opacity:1}}
+@keyframes cellfill{0%,35%{background:rgba(255,255,255,.1);box-shadow:none}55%,100%{background:#ffb347;box-shadow:0 0 1.4cqw rgba(255,179,71,.9)}}
+.wp-split{height:.9cqw;border-radius:99px;background:#4f8dff;margin:1.1cqw 0 1cqw;overflow:hidden}
+.wp-split i{display:block;height:100%;width:var(--h,80%);background:#ffb347;border-radius:99px 0 0 99px;transition:width .5s cubic-bezier(.2,.8,.2,1)}
+/* Tagesstrecke: das Auto fährt vom Haus zum Ziel, die Spur zeigt den Verbrauch */
+.wr{left:3cqw;right:3cqw;bottom:3cqw;padding:1.5cqw 2cqw 1.4cqw;display:grid;grid-template-columns:auto 1fr;align-items:center;gap:1.2cqw 1.6cqw}
+.wr p{grid-column:1/-1}
+.wr-home{width:3.2cqw;height:3.2cqw;background:#ffb347;clip-path:polygon(50% 0,100% 42%,84% 42%,84% 100%,16% 100%,16% 42%,0 42%)}
+.wr-line{position:relative;height:1cqw;border-radius:99px;background:repeating-linear-gradient(90deg,rgba(255,255,255,.3) 0 1.6cqw,transparent 1.6cqw 3.2cqw)}
+.wr-line>i{position:absolute;left:0;top:50%;height:var(--tk,1cqw);margin-top:calc(var(--tk,1cqw)/-2);width:var(--d,40%);border-radius:99px;background:linear-gradient(90deg,transparent,var(--tc,#3ddc6a));box-shadow:0 0 1.6cqw var(--tc,#3ddc6a);transition:width .55s cubic-bezier(.2,.8,.2,1),height .4s,margin .4s,background .4s}
+.wr-pin{position:absolute;left:var(--d,40%);top:50%;width:2.2cqw;height:2.2cqw;margin:-3.6cqw 0 0 -1.1cqw;border-radius:50% 50% 50% 0;rotate:-45deg;background:#ff5e62;box-shadow:0 0 1.6cqw rgba(255,94,98,.8);transition:left .55s cubic-bezier(.2,.8,.2,1)}
+.wr-car{position:absolute;top:50%;left:0;width:4.4cqw;height:2cqw;margin:-1.6cqw 0 0 -2.2cqw;border-radius:.9cqw .9cqw .5cqw .5cqw;background:#fff;box-shadow:0 0 1.4cqw rgba(255,255,255,.7);animation:wrgo var(--rt,3s) cubic-bezier(.45,0,.3,1) infinite}
+.wr-car::before,.wr-car::after{content:"";position:absolute;bottom:-.6cqw;width:1.1cqw;height:1.1cqw;border-radius:50%;background:#0a1020;border:.2cqw solid #fff;box-sizing:border-box}
+.wr-car::before{left:.5cqw}.wr-car::after{right:.5cqw}
+@keyframes wrgo{0%{left:0}70%,100%{left:var(--d,40%)}}
+.viz .wkw{right:3cqw;bottom:auto;top:17.5cqw;min-width:0}
+@media (max-width:719px){.wn b,.wp b,.wr b{font-size:4.2cqw}.wn p span,.wp p span,.wr p span{font-size:2.5cqw}.wn-track u{font-size:2.1cqw;top:2.4cqw}.wn{padding:2cqw 2.4cqw}.wn p{margin-top:3.2cqw}.viz .wkw{display:none}
+  /* am Handy stehen die drei Tafeln unter dem Bild statt darauf, das Bild bleibt 16:9 */
+  #viz-wb{aspect-ratio:auto;padding:56.25% 6px 6px;display:grid;gap:6px}
+  #viz-wb>img,#viz-wb>div.viz-on{bottom:auto;height:auto;aspect-ratio:16/9}
+  #viz-wb>.viz-svg{height:auto!important;aspect-ratio:16/9}
+  #viz-wb .wn,#viz-wb .wp,#viz-wb .wr{position:relative;left:auto;right:auto;top:auto;bottom:auto;border-radius:12px;min-width:0}
+  #viz-wb .wn{order:1;margin-top:6px}#viz-wb .wp{order:3}#viz-wb .wr{order:2}
+  #viz-wb .wp-cells{height:7cqw}
+  #viz-wb{position:relative;top:auto}}
+@media (prefers-reduced-motion:reduce){.wr-car{animation:none;left:var(--d,40%)}.wp-cells i.use{animation:none;background:#ffb347}}
+@media (max-width:719px){#viz-wb .wn,#viz-wb .wp,#viz-wb .wr{justify-self:stretch;max-width:none;width:auto;box-sizing:border-box}#viz-wb .wp{display:grid;grid-template-columns:auto 1fr;gap:0 3cqw;align-items:center}#viz-wb .wp-split{grid-column:1/-1}#viz-wb .wp p{grid-column:1/-1}}

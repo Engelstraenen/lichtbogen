@@ -189,9 +189,14 @@ RECHNER = """
 <svg class="viz-svg" viewBox="0 0 1600 900" preserveAspectRatio="xMidYMid slice">
 <path class="cab cab-glow" id="wb-c1" d="M0 0"/><path class="cab cab-core" id="wb-c2" d="M0 0"/><path class="cab cab-pulse" id="wb-c3" d="M0 0"/>
 </svg>
-<div class="hud hud-a"><div class="hbat"><i id="wb-fill"></i></div><b id="wb-hud-night">–</b><span>über Nacht im Akku</span></div>
-<div class="hud hud-b"><b id="wb-hud-kmh">–</b><span>Reichweite je Stunde Laden</span></div>
-<div class="hud hud-c"><b id="wb-hud-kw">–</b><span>Ladeleistung</span></div>
+<div class="wn" id="wn"><span class="wn-moon"></span>
+<div class="wn-track"><i id="wn-fill"></i><b id="wn-dot"></b><u style="left:0">22 Uhr</u><u style="left:25%%">0 Uhr</u><u style="left:50%%">2 Uhr</u><u style="left:75%%">4 Uhr</u><u style="left:100%%">6 Uhr</u></div>
+<span class="wn-sun"></span><p><b id="wn-t">–</b><span id="wn-s">Tagesstrecke nachgeladen</span></p></div>
+<div class="wp" id="wp"><div class="wp-cells" id="wp-cells"></div><div class="wp-split"><i id="wp-home"></i></div>
+<p><b id="wp-t">–</b><span id="wp-s">–</span></p></div>
+<div class="wr" id="wr"><i class="wr-home"></i><div class="wr-line"><i id="wr-trail"></i><b class="wr-car" id="wr-car"></b><em class="wr-pin" id="wr-pin"></em></div>
+<p><b id="wr-t">–</b><span id="wr-s">–</span></p></div>
+<div class="hud hud-c wkw"><b id="wb-hud-kw">–</b><span>Ladeleistung · <span id="wb-hud-kmh">–</span> je Stunde</span></div>
 </div>
 <div class="card">
 %(wb_km)s%(wb_v)s%(wb_akku)s%(wb_home)s%(wb_kw)s
