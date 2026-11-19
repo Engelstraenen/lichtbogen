@@ -48,13 +48,44 @@
     var poly = function (pts) { return 'polygon(' + pts.map(function (q) { return q[0].toFixed(2) + '% ' + q[1].toFixed(2) + '%'; }).join(',') + ')'; };
     var place = function (id, q) { var e = $('#' + id); if (e) { e.style.left = q[0] + '%'; e.style.top = q[1] + '%'; } };
     place('pv-chip-bat', GEO.bat); place('pv-chip-car', GEO.car);
-    var vizWb = function (kw, night, kmh) {
-      var k = kw < 5 ? 0 : kw < 20 ? 1 : 2;
+    var pop = function (id) { var e = $('#' + id); if (!e) return; e.classList.remove('pop'); void e.offsetWidth; e.classList.add('pop'); };
+    var lastWb = {};
+    var vizWb = function (o) {
+      var kw = o.kw, k = kw < 5 ? 0 : kw < 20 ? 1 : 2;
+      /* Kabel und Scheinwerfer: Ladeleistung */
       sv('viz-wb', '--spd', [2.6, 1.15, 0.5][k] + 's'); sv('viz-wb', '--th', [5, 8, 12][k]); sv('viz-wb', '--pw', [0.3, 0.65, 1][k]);
       sv('viz-wb', '--dash', [26, 60, 110][k]); sv('viz-wb', '--gap', [190, 150, 100][k]); sv('viz-wb', '--tot', [216, 210, 210][k]);
-      sv('wb-fill', '--fill', Math.max(6, Math.round(night * 100)) + '%'); sv('wb-fill', '--bc', night >= 1 ? '#3ddc6a' : '#ffb347');
       var on = $('#wb-on'); if (on) on.style.opacity = [0, 0.45, 1][k];
-      txt('wb-hud-night', night >= 1 ? 'voll' : nf(night * 100) + ' %'); txt('wb-hud-kmh', '+' + nf(kmh) + ' km'); txt('wb-hud-kw', nf(kw, kw < 5 ? 1 : 0) + ' kW');
+      txt('wb-hud-kw', nf(kw, kw < 5 ? 1 : 0) + ' kW'); txt('wb-hud-kmh', '+' + nf(kw / o.v * 100) + ' km');
+      /* Tagesstrecke: Kilometer pro Jahr schieben das Ziel, der Verbrauch färbt die Spur */
+      var dayKm = o.km / 365, dayKwh = dayKm * o.v / 100, d = 12 + Math.min(1, dayKm / 110) * 82, hot = (o.v - 13) / 13;
+      sv('wr', '--d', d.toFixed(1) + '%'); sv('wr', '--rt', (1.6 + d / 40).toFixed(2) + 's');
+      sv('wr', '--tk', (0.7 + hot * 2.1).toFixed(2) + 'cqw');
+      sv('wr', '--tc', 'hsl(' + Math.round(140 - hot * 130) + ' 85% 58%)');
+      txt('wr-t', nf(dayKm) + ' km am Tag'); txt('wr-s', 'verbraucht ' + nf(dayKwh, 1) + ' kWh, bei ' + nf(o.v) + ' kWh auf 100 km');
+      /* Akku-Pack: Zellen = Akkugröße, leere Zellen = Tagesstrecke, Balken = Anteil zuhause */
+      var cells = Math.round(o.akku / 10), use = Math.max(1, Math.min(cells, Math.round(cells * dayKwh / o.akku))), box = $('#wp-cells');
+      if (box && (lastWb.cells !== cells || lastWb.use !== use)) {
+        var h = '';
+        for (var c = 0; c < cells; c++) h += c >= cells - use ? '<i class="use" style="--cd:' + ((c - (cells - use)) * 0.18).toFixed(2) + 's"></i>' : '<i></i>';
+        box.innerHTML = h; box.style.width = (cells * 2.6 + 1) + 'cqw';
+      }
+      sv('wp', '--cf', [3.4, 1.9, 1.1][k] + 's'); sv('wp-home', '--h', Math.round(o.home * 100) + '%');
+      txt('wp-t', nf(o.akku) + ' kWh Akku'); txt('wp-s', Math.round(dayKwh / o.akku * 100) + ' % pro Tag · ' + Math.round(o.home * 100) + ' % zuhause geladen');
+      /* Nacht: so lange lädt die Wallbox die Tagesstrecke nach (Anteil zuhause, mit Ladeverlust) */
+      var hrs = dayKwh * o.home * 1.1 / kw, w = Math.min(1, hrs / 8), end = 22 + hrs, hh = Math.floor(end) % 24, mm = Math.round((end - Math.floor(end)) * 60);
+      if (mm === 60) { mm = 0; hh = (hh + 1) % 24; }
+      sv('wn', '--w', Math.max(2, w * 100).toFixed(1) + '%');
+      var nf2 = $('#wn-fill'); if (nf2) nf2.classList.toggle('over', hrs > 8);
+      txt('wn-t', hrs > 8 ? 'reicht nicht über Nacht' : 'fertig um ' + hh + ':' + ('0' + mm).slice(-2) + ' Uhr');
+      txt('wn-s', hrs > 8 ? 'die Tagesstrecke braucht ' + hm(hrs) + ' Ladezeit' : 'Tagesstrecke nachgeladen in ' + hm(hrs) + ', Start 22 Uhr');
+      /* kurzer Stoß an dem Teil, das sich gerade geändert hat */
+      if (lastWb.km != null) {
+        if (lastWb.km !== o.km || lastWb.v !== o.v) pop('wr');
+        if (lastWb.akku !== o.akku || lastWb.home !== o.home) pop('wp');
+        if (lastWb.kw !== kw || lastWb.km !== o.km || lastWb.v !== o.v || lastWb.home !== o.home) pop('wn');
+      }
+      lastWb = { km: o.km, v: o.v, akku: o.akku, home: o.home, kw: kw, cells: cells, use: use };
     };
     var vizPv = function (area, f, self, aut, bat, car, kwp) {
       var t = Math.max(0.1, Math.min(1, (area - 10) / 110)), R = GEO.roof;
@@ -87,7 +118,7 @@
       else if (kw < 20) t = '11 kW passt für die meisten Haushalte: über Nacht ist der Akku voll, und der Hausanschluss kommt in der Regel gut damit klar.';
       else t = '22 kW lädt schnell, aber nur, wenn Auto und Hausanschluss das mitmachen. Das klären wir mit einem Blick in deinen Zählerschrank.';
       txt('wb-verdict', t);
-      vizWb(kw, night, kw / v * 100);
+      vizWb({ km: km, v: v, akku: akku, home: home, kw: kw });
     };
     var pv = function () {
       var area = val('pv-area'), f = parseFloat(radio('pv-dir')), use = val('pv-use'), bat = parseFloat(radio('pv-bat')), car = radio('pv-car') === '1';
