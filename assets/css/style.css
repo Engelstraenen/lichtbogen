@@ -448,3 +448,60 @@ body:has(.viz)::after{display:none!important}
   #viz-wb{position:relative;top:auto}}
 @media (prefers-reduced-motion:reduce){.wr-car{animation:none;left:var(--d,40%)}.wp-cells i.use{animation:none;background:#ffb347}}
 @media (max-width:719px){#viz-wb .wn,#viz-wb .wp,#viz-wb .wr{justify-self:stretch;max-width:none;width:auto;box-sizing:border-box}#viz-wb .wp{display:grid;grid-template-columns:auto 1fr;gap:0 3cqw;align-items:center}#viz-wb .wp-split{grid-column:1/-1}#viz-wb .wp p{grid-column:1/-1}}
+
+/* Rechner als lebendige Miniaturwelt: Fahrt, Rückkehr, Laden über Nacht, Morgen */
+.viz.mw{background:#060a18}
+.mw-img{opacity:0;transition:opacity .7s ease}
+.mw-img.on{opacity:1}
+.mw-night,.mw-dawn{position:absolute;inset:0;opacity:0;transition:opacity 1s ease;pointer-events:none;z-index:1}
+.mw-night{background:
+ radial-gradient(1.2px 1.2px at 12% 14%,#fff 50%,transparent 51%),radial-gradient(1.4px 1.4px at 27% 7%,#fff 50%,transparent 51%),radial-gradient(1px 1px at 41% 18%,#fff 50%,transparent 51%),
+ radial-gradient(1.5px 1.5px at 58% 9%,#fff 50%,transparent 51%),radial-gradient(1px 1px at 69% 21%,#fff 50%,transparent 51%),radial-gradient(1.3px 1.3px at 83% 12%,#fff 50%,transparent 51%),
+ radial-gradient(1px 1px at 93% 24%,#fff 50%,transparent 51%),radial-gradient(1.2px 1.2px at 6% 30%,#fff 50%,transparent 51%),radial-gradient(1px 1px at 49% 4%,#fff 50%,transparent 51%),
+ linear-gradient(180deg,rgba(3,6,26,.72),rgba(3,6,26,.5) 45%,rgba(3,6,26,.62))}
+.mw-dawn{background:linear-gradient(200deg,rgba(255,196,120,.55),rgba(255,150,90,.22) 38%,rgba(255,150,90,0) 70%)}
+.mw-moon{position:absolute;left:var(--mx,10%);top:var(--my,16%);width:5cqw;height:5cqw;margin:-2.5cqw 0 0 -2.5cqw;border-radius:50%;background:radial-gradient(circle at 66% 36%,transparent 44%,#e9f0ff 46%);box-shadow:0 0 4cqw rgba(190,210,255,.45)}
+.mw .viz-svg{z-index:2}
+.mw-p{fill:none;stroke-linecap:round;stroke-linejoin:round}
+.mw-stream-g{stroke:#58c8ff;stroke-width:calc(var(--sw,8)*2.6px);opacity:calc(var(--so,0)*.28)}
+.mw-stream{stroke:#dff6ff;stroke-width:calc(var(--sw,8)*1px);opacity:var(--so,0);stroke-dasharray:calc(var(--sw,8)*5px) calc(var(--sw,8)*6px);animation:mwflow var(--sp,1s) linear infinite}
+@keyframes mwflow{from{stroke-dashoffset:0}to{stroke-dashoffset:calc(var(--sw,8)*11px)}}
+.mw-trail{stroke:var(--tc,#3ddc6a);stroke-width:var(--tk,6);opacity:.85}
+.mw-pub{fill:#4f8dff;opacity:0}
+.mw-car .c-sh{fill:rgba(0,0,0,.45)}.mw-car .c-body{fill:#f6f8ff;stroke:#c9d3ea;stroke-width:1.500}.mw-car .c-glass{fill:#1c2c55}
+.mw-car .c-beam{fill:rgba(255,236,170,.34);opacity:var(--beam,1)}
+.mw-car .c-led{fill:var(--led,#ffb347)}
+.mw-bat,.mw-clock,.mw-cap{position:absolute;z-index:3;color:#fff;background:rgba(7,10,18,.84);border:1px solid rgba(255,255,255,.14);border-radius:2cqw}
+.mw-bat{left:3cqw;top:3cqw;padding:1.4cqw 1.6cqw}
+.mw-bat p,.mw-cap{margin:0;display:flex;align-items:baseline;gap:1.2cqw;flex-wrap:wrap}
+.mw-bat p{margin-top:1cqw}
+.mw-bat b,.mw-cap b,.mw-clock b{font:800 2.9cqw/1 var(--head,inherit);letter-spacing:-.03em;font-variant-numeric:tabular-nums}
+.mw-bat span,.mw-cap span,.mw-clock span{font-size:1.5cqw;color:#c9cfdb}
+.mw .wp-cells i{background:#3ddc6a;animation:none;transition:background .25s,box-shadow .25s}
+.mw .wp-cells i.e{background:rgba(255,255,255,.1);box-shadow:none}
+.mw .wp-cells i.h{background:#ffb347;box-shadow:0 0 1.4cqw rgba(255,179,71,.9)}
+.mw .wp-cells i.u{background:#4f8dff;box-shadow:0 0 1.4cqw rgba(79,141,255,.9)}
+.mw-clock{right:3cqw;top:3cqw;padding:1.4cqw 1.8cqw;display:grid;gap:.6cqw;text-align:right}
+.mw-clock b{font-size:4.2cqw}
+.mw-cap{left:3cqw;right:3cqw;bottom:3cqw;padding:1.4cqw 2cqw 1.9cqw}
+.mw-cap.bad b{color:#ff6b5e}
+.mw-steps{position:absolute;left:5cqw;right:5cqw;bottom:3.7cqw;display:flex;gap:1cqw;z-index:4}
+.mw-steps i{flex:1;height:.45cqw;min-height:2px;border-radius:9px;background:rgba(255,255,255,.2);overflow:hidden;position:relative}
+.mw-steps i::after{content:"";position:absolute;inset:0;background:#ffb347;transform-origin:0 50%;transform:scaleX(var(--f,0))}
+@media (max-width:719px){
+  #viz-wb.mw{aspect-ratio:auto;padding:56.25% 6px 6px;display:grid;gap:6px;position:relative;top:auto}
+  #viz-wb.mw>img,#viz-wb.mw>.mw-night,#viz-wb.mw>.mw-dawn{bottom:auto;height:auto;aspect-ratio:16/9}
+  #viz-wb.mw>.viz-svg{height:auto!important;aspect-ratio:16/9}
+  #viz-wb.mw .mw-bat,#viz-wb.mw .mw-clock,#viz-wb.mw .mw-cap{position:relative;left:auto;right:auto;top:auto;bottom:auto;border-radius:12px}
+  #viz-wb.mw .mw-clock{position:absolute;right:8px;top:8px;padding:1.6cqw 2.2cqw}
+  #viz-wb.mw .mw-steps{position:relative;left:auto;right:auto;bottom:auto;margin:0 6px 4px}
+  .mw-bat b,.mw-cap b{font-size:4.4cqw}.mw-clock b{font-size:5.6cqw}.mw-bat span,.mw-cap span,.mw-clock span{font-size:2.6cqw}
+  .mw .wp-cells{height:7cqw}
+}
+@media (max-width:719px){
+  /* Bild, Nacht-Ebenen und Fahrspur exakt gleich groß (16:9 der vollen Breite), Tafeln darunter */
+  #viz-wb.mw{padding:56.25cqw 0 6px}
+  #viz-wb.mw>img,#viz-wb.mw>.mw-night,#viz-wb.mw>.mw-dawn{left:0;right:0;top:0;bottom:auto;width:100%;height:56.25cqw;aspect-ratio:auto}
+  #viz-wb.mw>.viz-svg{height:56.25cqw!important;aspect-ratio:auto}
+  #viz-wb.mw .mw-bat,#viz-wb.mw .mw-cap{margin:0 6px}
+}
